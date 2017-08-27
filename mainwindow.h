@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QWidget>
 #include <QtWidgets>
 #include <QString>
+#include <QShortcut>
 #include "song.h"
 
 class MainWindow : public QWidget{
@@ -19,17 +19,18 @@ private slots:
     void about();
     bool save_lrc();
     bool save_translrc();
+    void display_song_status();
 
 private:
     bool save(bool save_translated);
 
     //---widgets---
-    //ID input field
+    // ID input field
     QLabel *input_id_label;
     QLineEdit *input_id_edit;
     QPushButton *input_button;
 
-    //song info
+    // song info
     QLabel *info_title_label;
     QLineEdit *info_title_edit;
     QLabel *info_artist_label;
@@ -37,13 +38,17 @@ private:
     QLabel *info_album_label;
     QLineEdit *info_album_edit;
 
-    //lyrics (lrc) & translated lyrics (translrc)
+    // lyrics (lrc) & translated lyrics (translrc)
     QLabel *lrc_label;
     QTextEdit *lrc_text;
     QPushButton *lrc_save_button;
     QLabel *translrc_label;
     QTextEdit *translrc_text;
     QPushButton *translrc_save_button;
+
+    // song status (displays if song/lrc/translrc exists)
+    QLabel *status_label;
+    QLineEdit *status_edit;
 
     Song *song;
 };
