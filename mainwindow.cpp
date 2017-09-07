@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
-{
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+    song = new Song();
+
     //---widgets---
     input_id_label = new QLabel(tr("Song ID:"));
     input_id_edit = new QLineEdit();
@@ -17,13 +18,28 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     lrc_label = new QLabel(tr("Original lyrics:"));
     lrc_text = new QTextEdit();
     lrc_save_button = new QPushButton(tr("Save original lyrics"));
+    lrc_submit_button = new QPushButton(tr("Submit lyrics to 163"));
     translrc_label = new QLabel(tr("Translated lyrics:"));
     translrc_text = new QTextEdit();
     translrc_save_button = new QPushButton(tr("Save translated lyrics"));
+    translrc_submit_button = new QPushButton(tr("Submit translation to 163"));
 
     status_label = new QLabel(tr("Status:"));
     status_edit = new QLineEdit();
     //---END widgets---
+
+    //---menu bar---
+    QMenuBar* menu_bar = new QMenuBar();
+    QMenu *file_menu = new QMenu("File");
+        menu_bar->addMenu(file_menu);
+        QAction *save_lrc_action = file_menu->addAction("Save &lyrics");
+        QAction *save_translrc_action = file_menu->addAction("Save &translated lyrics");
+        file_menu->addSeparator();
+        QAction *quit_action = file_menu->addAction("&Quit");
+    QMenu *about_menu = new QMenu("About");
+        menu_bar->addMenu(about_menu);
+        QAction *about_action = about_menu->addAction("&About");
+    //---END menu bar---
 
     //---layouts---
     // 3rd
@@ -48,11 +64,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     lrc_layout->addWidget(lrc_label);
     lrc_layout->addWidget(lrc_text);
     lrc_layout->addWidget(lrc_save_button);
+    lrc_layout->addWidget(lrc_submit_button);
 
     QVBoxLayout *translrc_layout = new QVBoxLayout();
     translrc_layout->addWidget(translrc_label);
     translrc_layout->addWidget(translrc_text);
     translrc_layout->addWidget(translrc_save_button);
+    translrc_layout->addWidget(translrc_submit_button);
 
     QHBoxLayout *status_layout = new QHBoxLayout();
     status_layout->addWidget(status_label,1);
@@ -78,32 +96,36 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     toolbar_layout->addLayout(info_layout);
 
     // 0th
-    QVBoxLayout *main_layout = new QVBoxLayout();
+    QVBoxLayout *main_layout = new QVBoxLayout(this);
     main_layout->addLayout(toolbar_layout);
     main_layout->addLayout(lrc_translrc_layout);
+    main_layout->setMenuBar(menu_bar);
 
     setLayout(main_layout);
     setFixedSize(840,600);
     setWindowTitle(tr("163-get-lyrics"));
     //---END layouts---
 
-    song = new Song();
-
     //---connect---
     connect(input_button,SIGNAL(clicked()),this,SLOT(get_info_lyrics()));
     connect(lrc_save_button,SIGNAL(clicked()),this,SLOT(save_lrc()));
+    connect(lrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_lrc()));
     connect(translrc_save_button,SIGNAL(clicked()),this,SLOT(save_translrc()));
+    connect(translrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_translrc()));
+
+    connect(save_lrc_action,SIGNAL(triggered()),this,SLOT(save_lrc()));
+    connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
+    connect(quit_action,SIGNAL(triggered()),this,SLOT(quit()));
+    connect(about_action,SIGNAL(triggered()),this,SLOT(about()));
     //---END connect---
 }
 
-MainWindow::~MainWindow(){}
+MainWindow::~MainWindow() {}
 
-void MainWindow::get_info_lyrics(){
+void MainWindow::get_info_lyrics() {
     status_edit->setText(tr("Getting song information and lyrics..."));
-    qDebug() << "\nGetting info & lyrics...";
 
     song->id = input_id_edit->text().toDouble();
-
     song->get_info_lyrics();
 
     info_title_edit->setText(song->title);
@@ -115,24 +137,22 @@ void MainWindow::get_info_lyrics(){
     display_song_status();
 }
 
-void MainWindow::quit(){
+void MainWindow::quit() {
     qApp->quit();
 }
 
-bool MainWindow::save(bool save_translated){
-    qDebug() << "\nSaving...";
+bool MainWindow::save(bool save_translated) {
     QFileDialog dialog(this);
     dialog.setWindowModality(Qt::WindowModal);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
-    QString file_name = "";
-    if(song->status_code != SONG_STATUS_NOT_EXIST){
-        if(save_translated){
-            file_name = song->title + " - " + song->artist + " (translated).txt";
-        }
-        else{
-            file_name = song->title + " - " + song->artist + ".txt";
-        }
+    QString file_name = "*";
+    if(song->status_code != SONG_STATUS_NOT_EXIST) {
+        if(save_translated)
+            file_name = song->title + " - " + song->artist + " (translated)";
+        else
+            file_name = song->title + " - " + song->artist;
     }
+    file_name += ".lrc";
     dialog.selectFile(file_name);
     if (dialog.exec() != QDialog::Accepted)
         return false;
@@ -147,12 +167,10 @@ bool MainWindow::save(bool save_translated){
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
-    if(save_translated){
+    if(save_translated)
         out << translrc_text->toPlainText();
-    }
-    else{
+    else
         out << lrc_text->toPlainText();
-    }
     out.setGenerateByteOrderMark(true);
     out.flush();
 
@@ -161,30 +179,48 @@ bool MainWindow::save(bool save_translated){
     return true;
 }
 
-bool MainWindow::save_lrc(){
+bool MainWindow::save_lrc() {
     return save(false);
 }
 
-bool MainWindow::save_translrc(){
+bool MainWindow::save_translrc() {
     return save(true);
 }
 
-void MainWindow::about(){
-    QMessageBox::about(this, tr("About 163-get-lyrics"),
-        tr("Get lyrics from CloudMusic (<a href=\"http://music.163.com\">music.163.com</a>)<br/>"
+bool MainWindow::submit_lrc() {
+    return song->submit_lrc();
+}
+
+bool MainWindow::submit_translrc() {
+    return song->submit_translrc();
+}
+
+void MainWindow::about() {
+    QMessageBox::about(this, tr("About 163-lyrics-getter"),
+        tr("Get lyrics from NetEase Cloud Music (<a href=\"http://music.163.com\">music.163.com</a>)<br/>"
             "Author: ij96<br/>"
-            "<a href=\"http://github.com/ij96/163-get-lyrics\">Source code</a>"
+            "<a href=\"http://github.com/ij96/163-lyrics-getter\">GitHub page</a>"
             ));
 }
 
-void MainWindow::display_song_status(){
+void MainWindow::display_song_status() {
     QString msg;
     switch(song->status_code) {
-        case SONG_STATUS_HAS_LRC_TRANSLRC : msg = tr("All found."); break;
-        case SONG_STATUS_NOT_EXIST : msg = tr("Song does not exist."); break;
-        case SONG_STATUS_NO_LRC  : msg = tr("Lyrics do not exist."); break;
-        case SONG_STATUS_NO_TRANSLRC : msg = tr("Lyrics found, but translated lyrics not found."); break;
-        case SONG_STATUS_INSTRUMENTAL : msg = tr("Song is instrumental - no lyrics should exist."); break;
+        case SONG_STATUS_HAS_LRC_TRANSLRC :
+            msg = tr("All found.");
+            break;
+        case SONG_STATUS_NOT_EXIST :
+            msg = tr("Song does not exist.");
+            break;
+        case SONG_STATUS_NO_LRC  :
+            msg = tr("Lyrics do not exist.");
+            break;
+        case SONG_STATUS_NO_TRANSLRC :
+            msg = tr("Lyrics found, but translated lyrics not found.");
+            break;
+        case SONG_STATUS_INSTRUMENTAL :
+            msg = tr("Song is instrumental - no lyrics should exist.");
+            break;
     }
     status_edit->setText(msg);
 }

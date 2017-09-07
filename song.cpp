@@ -1,10 +1,10 @@
 #include "song.h"
 
-Song::Song(){}
+Song::Song() {}
 
-Song::~Song(){}
+Song::~Song() {}
 
-bool Song::get_info_json(){
+bool Song::get_info_json() {
     QEventLoop event_loop;
     QNetworkAccessManager qnam;
     QObject::connect(&qnam, SIGNAL(finished(QNetworkReply*)),&event_loop,SLOT(quit()));
@@ -21,15 +21,14 @@ bool Song::get_info_json(){
 
         delete reply;
         return true;
-    }
-    else {  // failure
+    } else {  // failure
         qDebug() << "Failure to load song information: " << reply->errorString();
         delete reply;
         return false;
     }
 }
 
-bool Song::get_lyrics_json(){
+bool Song::get_lyrics_json() {
     QEventLoop event_loop;
     QNetworkAccessManager qnam;
     QObject::connect(&qnam, SIGNAL(finished(QNetworkReply*)),&event_loop,SLOT(quit()));
@@ -46,15 +45,14 @@ bool Song::get_lyrics_json(){
 
         delete reply;
         return true;
-    }
-    else {  // failure
+    } else {  // failure
         qDebug() << "Failure to load song lyrics: " << reply->errorString();
         delete reply;
         return false;
     }
 }
 
-void Song::get_info(){
+void Song::get_info() {
     QJsonObject json_songs_0_obj = song_info_json_obj.value("songs").toArray()[0].toObject();
 
     QJsonValue title_json = json_songs_0_obj.value("name");
@@ -70,7 +68,7 @@ void Song::get_info(){
     qDebug() << "Album: " << album_json;
 }
 
-void Song::get_lyrics(){
+void Song::get_lyrics() {
     QJsonValue lrc_json = song_lyrics_json_obj.value("lrc").toObject().value("lyric");
     QJsonValue translrc_json = song_lyrics_json_obj.value("tlyric").toObject().value("lyric");
 
@@ -81,37 +79,44 @@ void Song::get_lyrics(){
     qDebug() << "Translated lyrics: " << translrc_json;
 }
 
-void Song::check_status(){
+void Song::check_status() {
     // check if song exists, by counting items in "songs" array: if 0, then song does not exist
-    if(song_info_json_obj.value("songs").toArray().size() == 0){
+    if(song_info_json_obj.value("songs").toArray().size() == 0) {
         status_code = SONG_STATUS_NOT_EXIST;
-    }
-    else{
-        if(song_lyrics_json_obj.value("nolyric").toBool() == true){
+    } else {
+        if(song_lyrics_json_obj.value("nolyric").toBool() == true) {
             status_code = SONG_STATUS_INSTRUMENTAL;    // instrumental - no lyrics should exist
-        }
-        else if(song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() == ""){
+        } else if(song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() == "") {
             status_code = SONG_STATUS_NO_LRC;    // lyrics not found
-        }
-        else if(song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() == ""){
+        } else if(song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() == "") {
             status_code = SONG_STATUS_NO_TRANSLRC;    // lyrics found, but translated lyrics not found
+        } else {
+            status_code = SONG_STATUS_HAS_LRC_TRANSLRC;
         }
     }
 }
 
-void Song::get_info_lyrics(){
+void Song::get_info_lyrics() {
     get_info_json();
     get_lyrics_json();
     check_status();
-    if(status_code == SONG_STATUS_NOT_EXIST){ // clear all fields
+    if(status_code == SONG_STATUS_NOT_EXIST) { // clear all fields
         title = "";
         artist = "";
         album = "";
         lrc = "";
         translrc = "";
-    }
-    else{
+    } else {
         get_info();
         get_lyrics();
     }
+}
+
+
+bool Song::submit_lrc() {
+    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/up?id=" + QString::number(id)));
+}
+
+bool Song::submit_translrc() {
+    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/translrc?id=" + QString::number(id)));
 }

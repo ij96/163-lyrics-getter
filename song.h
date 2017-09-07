@@ -9,6 +9,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QJsonParseError>
+#include <QDesktopServices>
 
 //status code
 #define SONG_STATUS_HAS_LRC_TRANSLRC    0
@@ -22,7 +23,7 @@ public:
     Song();
     ~Song();
 
-    qint32 id;
+    qint32 id = 0;
 
     QString title;
     QString album;
@@ -33,7 +34,7 @@ public:
     QJsonObject song_info_json_obj;
     QJsonObject song_lyrics_json_obj;
 
-    qint8 status_code = 0;
+    qint8 status_code = SONG_STATUS_NOT_EXIST;
 
     bool get_info_json();
     bool get_lyrics_json();
@@ -41,6 +42,8 @@ public:
     void get_lyrics();
     void get_info_lyrics();
     void check_status();
+    bool submit_lrc();
+    bool submit_translrc();
 };
 
 #endif // SONG_H

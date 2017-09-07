@@ -19,6 +19,8 @@ private slots:
     void about();
     bool save_lrc();
     bool save_translrc();
+    bool submit_lrc();
+    bool submit_translrc();
     void display_song_status();
 
 private:
@@ -42,9 +44,11 @@ private:
     QLabel *lrc_label;
     QTextEdit *lrc_text;
     QPushButton *lrc_save_button;
+    QPushButton *lrc_submit_button;
     QLabel *translrc_label;
     QTextEdit *translrc_text;
     QPushButton *translrc_save_button;
+    QPushButton *translrc_submit_button;
 
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;
