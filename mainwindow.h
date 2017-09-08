@@ -4,7 +4,9 @@
 #include <QtWidgets>
 #include <QString>
 #include <QShortcut>
+#include <QTranslator>
 #include "song.h"
+//#include "translator.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -14,17 +16,26 @@ public:
     ~MainWindow();
 
 private slots:
-    void get_info_lyrics();
     void quit();
     void about();
+
+    void get_info_lyrics();
+
     bool save_lrc();
     bool save_translrc();
+
     bool submit_lrc();
     bool submit_translrc();
+
     void display_song_status();
+
+    void set_language(QAction* action);
 
 private:
     bool save(bool save_translated);
+    void load_settings();
+    void save_settings();
+    bool setup_settings_file();
 
     //---widgets---
     // ID input field
@@ -54,6 +65,19 @@ private:
     QLabel *status_label;
     QLineEdit *status_edit;
 
+    //---END widgets---
+
+    // application name
+    QString app_name;
+
+    // multi-language
+    QLocale locale;
+    QTranslator translator;
+
+    // settings
+    QString settings_file_path;
+
+    // song object
     Song *song;
 };
 

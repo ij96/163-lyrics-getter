@@ -1,6 +1,17 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+    //---settings file---
+    settings_file_path = QApplication::applicationDirPath() + "/config.ini";
+    setup_settings_file();  // create settings file, if it does not exist
+    load_settings();        // load from settings
+
+    //---translator---
+    translator.load(QString(":/language/%1.qm").arg(locale.name()));
+    qApp->installTranslator(&translator);
+    //---END translator---
+
+    app_name = tr("163 Lyrics Getter");
     song = new Song();
 
     //---widgets---
@@ -30,15 +41,23 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     //---menu bar---
     QMenuBar* menu_bar = new QMenuBar();
-    QMenu *file_menu = new QMenu("File");
+    QMenu *file_menu = new QMenu(tr("File"));
         menu_bar->addMenu(file_menu);
-        QAction *save_lrc_action = file_menu->addAction("Save &lyrics");
-        QAction *save_translrc_action = file_menu->addAction("Save &translated lyrics");
+        QAction *save_lrc_action = file_menu->addAction(tr("Save original lyrics"));
+        QAction *save_translrc_action = file_menu->addAction(tr("Save translated lyrics"));
         file_menu->addSeparator();
-        QAction *quit_action = file_menu->addAction("&Quit");
-    QMenu *about_menu = new QMenu("About");
+        QAction *quit_action = file_menu->addAction(tr("Quit"));
+    QMenu *options_menu = new QMenu(tr("Options"));
+        menu_bar->addMenu(options_menu);
+        QMenu *language_menu = new QMenu(tr("Language"));
+            options_menu->addMenu(language_menu);
+            QAction *language_en_GB_action = language_menu->addAction("English (UK)"); // do not translate
+                language_en_GB_action->setData("en_GB");
+            QAction *language_zh_CN_action = language_menu->addAction("\u4E2D\u6587"); // do not translate
+                language_zh_CN_action->setData("zh_CN");
+    QMenu *about_menu = new QMenu(tr("About"));
         menu_bar->addMenu(about_menu);
-        QAction *about_action = about_menu->addAction("&About");
+        QAction *about_action = about_menu->addAction(tr("About"));
     //---END menu bar---
 
     //---layouts---
@@ -103,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     setLayout(main_layout);
     setFixedSize(840,600);
-    setWindowTitle(tr("163-get-lyrics"));
+    setWindowTitle(app_name);
     //---END layouts---
 
     //---connect---
@@ -117,6 +136,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
     connect(quit_action,SIGNAL(triggered()),this,SLOT(quit()));
     connect(about_action,SIGNAL(triggered()),this,SLOT(about()));
+
+    connect(language_menu,SIGNAL(triggered(QAction*)),this,SLOT(set_language(QAction*)));
+
     //---END connect---
 }
 
@@ -159,9 +181,7 @@ bool MainWindow::save(bool save_translated) {
     QFile file(file_name);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Application"),
-            tr("Cannot write file %1:\n%2.")
-            .arg(QDir::toNativeSeparators(file_name),
-            file.errorString()));
+            tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(file_name),file.errorString()));
         return false;
     }
 
@@ -196,7 +216,7 @@ bool MainWindow::submit_translrc() {
 }
 
 void MainWindow::about() {
-    QMessageBox::about(this, tr("About 163-lyrics-getter"),
+    QMessageBox::about(this, tr("About") + app_name,
         tr("Get lyrics from NetEase Cloud Music (<a href=\"http://music.163.com\">music.163.com</a>)<br/>"
             "Author: ij96<br/>"
             "<a href=\"http://github.com/ij96/163-lyrics-getter\">GitHub page</a>"
@@ -212,7 +232,7 @@ void MainWindow::display_song_status() {
         case SONG_STATUS_NOT_EXIST :
             msg = tr("Song does not exist.");
             break;
-        case SONG_STATUS_NO_LRC  :
+        case SONG_STATUS_NO_LRC :
             msg = tr("Lyrics do not exist.");
             break;
         case SONG_STATUS_NO_TRANSLRC :
@@ -223,4 +243,40 @@ void MainWindow::display_song_status() {
             break;
     }
     status_edit->setText(msg);
+}
+
+void MainWindow::set_language(QAction* action) {
+    QLocale locale_new = QLocale(action->data().toString());
+    if(locale != locale_new) {
+        locale = locale_new;
+        save_settings();
+        QMessageBox::warning(this, tr("Language changed"),
+            tr("Language changed, please restart application to apply the change."));
+    }
+}
+
+bool MainWindow::setup_settings_file() {
+    QFile file(settings_file_path);
+    if (!file.exists()) {  // if settings file does not exist, create and initialise it
+        if(!file.open(QFile::WriteOnly | QFile::Text))
+            return false;
+        else {
+            QTextStream out(&file);
+            out << "[General]\n" << "locale=en_GB";
+            out.flush();
+            file.close();
+        }
+    }
+    return true;
+}
+
+void MainWindow::load_settings() {
+    QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
+    locale = QLocale(settings->value("locale", "").toString());
+}
+
+void MainWindow::save_settings() {
+    QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
+    settings->setValue("locale", locale.name());
+    settings->sync();
 }
