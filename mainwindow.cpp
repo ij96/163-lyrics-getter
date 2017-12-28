@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_artist_edit = new QLineEdit();
     info_album_label = new QLabel(tr("Album:"));
     info_album_edit = new QLineEdit();
+    info_art_image = new Image();
 
     lrc_label = new QLabel(tr("Original lyrics:"));
     lrc_text = new QTextEdit();
@@ -113,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     QHBoxLayout *toolbar_layout = new QHBoxLayout();
     toolbar_layout->addLayout(input_status_layout);
     toolbar_layout->addLayout(info_layout);
+    toolbar_layout->addWidget(info_art_image);
 
     // 0th
     QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -153,6 +155,7 @@ void MainWindow::get_info_lyrics() {
     info_title_edit->setText(song->title);
     info_artist_edit->setText(song->artist);
     info_album_edit->setText(song->album);
+    info_art_image->setPixmap(QPixmap::fromImage(song->art));
     lrc_text->setText(song->lrc);
     translrc_text->setText(song->translrc);
 
