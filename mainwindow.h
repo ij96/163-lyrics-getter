@@ -51,7 +51,7 @@ private:
     QLineEdit *info_artist_edit;
     QLabel *info_album_label;
     QLineEdit *info_album_edit;
-    Image *info_art_image;
+    ImageCanvas *info_art_image;
 
     // lyrics (lrc) & translated lyrics (translrc)
     QLabel *lrc_label;
