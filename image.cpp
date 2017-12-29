@@ -2,7 +2,7 @@
 
 Image::Image(QWidget *parent) : QLabel(parent) {
     window_label = new QLabel(this);
-    window_label->setWindowModality(Qt::WindowModal);
+    window_label->setWindowModality(Qt::NonModal);
     window_label->setWindowFlags(Qt::Dialog);
     window_label->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 }

@@ -4,153 +4,196 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="18"/>
+        <location filename="../mainwindow.cpp" line="15"/>
+        <source>163 Lyrics Getter %1</source>
+        <translation>163歌词获取器 %1</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="19"/>
         <source>Song ID:</source>
         <translation>歌曲ID：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="20"/>
+        <location filename="../mainwindow.cpp" line="21"/>
         <source>Get lyrics</source>
         <translation>获取歌词</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="22"/>
+        <location filename="../mainwindow.cpp" line="23"/>
         <source>Title:</source>
         <translation>标题：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="24"/>
+        <location filename="../mainwindow.cpp" line="25"/>
         <source>Artist:</source>
         <translation>歌手：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="26"/>
+        <location filename="../mainwindow.cpp" line="27"/>
         <source>Album:</source>
         <translation>专辑：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="29"/>
+        <location filename="../mainwindow.cpp" line="30"/>
+        <source>Save cover</source>
+        <translation>保存封面</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="32"/>
         <source>Original lyrics:</source>
         <translation>歌词：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="31"/>
-        <location filename="../mainwindow.cpp" line="46"/>
+        <location filename="../mainwindow.cpp" line="34"/>
+        <location filename="../mainwindow.cpp" line="49"/>
         <source>Save original lyrics</source>
         <translation>保存歌词</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="32"/>
+        <location filename="../mainwindow.cpp" line="35"/>
         <source>Submit lyrics to 163</source>
         <translation>上传歌词</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="33"/>
+        <location filename="../mainwindow.cpp" line="36"/>
         <source>Translated lyrics:</source>
         <translation>翻译：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="35"/>
-        <location filename="../mainwindow.cpp" line="47"/>
+        <location filename="../mainwindow.cpp" line="38"/>
+        <location filename="../mainwindow.cpp" line="50"/>
         <source>Save translated lyrics</source>
         <translation>保存翻译</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="36"/>
+        <location filename="../mainwindow.cpp" line="39"/>
         <source>Submit translation to 163</source>
         <translation>上传翻译</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="38"/>
+        <location filename="../mainwindow.cpp" line="41"/>
         <source>Status:</source>
         <translation>状况：</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="44"/>
+        <location filename="../mainwindow.cpp" line="47"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="49"/>
+        <location filename="../mainwindow.cpp" line="52"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="50"/>
+        <location filename="../mainwindow.cpp" line="53"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="52"/>
+        <location filename="../mainwindow.cpp" line="55"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="58"/>
-        <location filename="../mainwindow.cpp" line="60"/>
-        <location filename="../mainwindow.cpp" line="219"/>
+        <location filename="../mainwindow.cpp" line="61"/>
+        <location filename="../mainwindow.cpp" line="63"/>
+        <location filename="../mainwindow.cpp" line="223"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="253"/>
+        <location filename="../mainwindow.cpp" line="147"/>
+        <source>Album cover art: %1</source>
+        <translation>专辑封面：%1</translation>
+    </message>
+    <message>
+        <source>Album cover art</source>
+        <translation type="vanished">封面</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="162"/>
+        <location filename="../mainwindow.cpp" line="208"/>
+        <source>Save As</source>
+        <translation>保存为</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="208"/>
+        <source>Images (*.jpg *.png)</source>
+        <translation>图像 (*.jpg *.png)</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="257"/>
         <source>Language changed</source>
         <translation>语言已改变</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="254"/>
+        <location filename="../mainwindow.cpp" line="258"/>
         <source>Language changed, please restart application to apply the change.</source>
         <translation>语言已改变，请重启应用以使改动生效。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="14"/>
         <source>163 Lyrics Getter</source>
-        <translation>163歌词获取器</translation>
+        <translation type="vanished">163歌词获取器</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="148"/>
+        <location filename="../mainwindow.cpp" line="138"/>
         <source>Getting song information and lyrics...</source>
         <translation>正在获取歌曲信息及歌词…</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="183"/>
+        <source>%1 - %2%3.lrc</source>
+        <translation type="obsolete">%1 - %2%3.lrc</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="161"/>
+        <source> (translated)</source>
+        <translation> (翻译)</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="162"/>
+        <source>LRC lyrics file (*.lrc)</source>
+        <translation>LRC歌词文件 (*.lrc)</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="169"/>
         <source>Application</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="184"/>
+        <location filename="../mainwindow.cpp" line="170"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>无法写入 %1:
 %2。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="220"/>
+        <location filename="../mainwindow.cpp" line="224"/>
         <source>Get lyrics from NetEase Cloud Music (&lt;a href=&quot;http://music.163.com&quot;&gt;music.163.com&lt;/a&gt;)&lt;br/&gt;Author: ij96&lt;br/&gt;&lt;a href=&quot;http://github.com/ij96/163-lyrics-getter&quot;&gt;GitHub page&lt;/a&gt;</source>
         <translation>获取网易云音乐歌词 (&lt;a href=&quot;http://music.163.com&quot;&gt;music.163.com&lt;/a&gt;)&lt;br/&gt;作者： ij96&lt;br/&gt;&lt;a href=&quot;http://github.com/ij96/163-lyrics-getter&quot;&gt;GitHub页面&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="230"/>
+        <location filename="../mainwindow.cpp" line="234"/>
         <source>All found.</source>
         <translation>歌词与翻译都已找到。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="233"/>
+        <location filename="../mainwindow.cpp" line="237"/>
         <source>Song does not exist.</source>
         <translation>歌曲不存在。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="236"/>
+        <location filename="../mainwindow.cpp" line="240"/>
         <source>Lyrics do not exist.</source>
         <translation>歌词不存在。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="239"/>
+        <location filename="../mainwindow.cpp" line="243"/>
         <source>Lyrics found, but translated lyrics not found.</source>
         <translation>已找到歌词，但无翻译。</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="242"/>
+        <location filename="../mainwindow.cpp" line="246"/>
         <source>Song is instrumental - no lyrics should exist.</source>
         <translation>纯音乐 - 无歌词。</translation>
     </message>

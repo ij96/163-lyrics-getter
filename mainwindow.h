@@ -71,7 +71,8 @@ private:
 
     //---END widgets---
 
-    // application name
+    // application
+    QString app_version;
     QString app_name;
 
     // multi-language
