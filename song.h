@@ -30,7 +30,7 @@ public:
     QString artist;
     QString lrc;                // lyrics
     QString translrc;           // translated lyrics
-    QImage art;
+    QImage cover;
 
     QJsonObject song_info_json_obj;
     QJsonObject song_lyrics_json_obj;
@@ -39,7 +39,7 @@ public:
 
     bool get_info_json();
     bool get_lyrics_json();
-    QImage get_art(const QString &url);
+    QImage get_cover(const QString &url);
     void get_info();
     void get_lyrics();
     void get_info_lyrics();

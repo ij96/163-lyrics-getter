@@ -52,7 +52,7 @@ bool Song::get_lyrics_json() {
     }
 }
 
-QImage Song::get_art(const QString &url) {
+QImage Song::get_cover(const QString &url) {
     if (url.isEmpty())
         return QImage();
 
@@ -82,17 +82,17 @@ void Song::get_info() {
     QJsonValue title_json = json_songs_0_obj.value("name");
     QJsonValue artist_json = json_songs_0_obj.value("artists").toArray()[0].toObject().value("name");
     QJsonValue album_json = json_songs_0_obj.value("album").toObject().value("name");
-    QJsonValue art_json = json_songs_0_obj.value("album").toObject().value("picUrl");
+    QJsonValue cover_json = json_songs_0_obj.value("album").toObject().value("picUrl");
 
     title = title_json.toString();
     artist = artist_json.toString();
     album = album_json.toString();
-    art = get_art(art_json.toString());
+    cover = get_cover(cover_json.toString());
     
     qDebug() << "Song title: " << title_json;
     qDebug() << "Artist: " << artist_json;
     qDebug() << "Album: " << album_json;
-    qDebug() << "Art: " << art_json;
+    qDebug() << "Cover URL: " << cover_json;
 }
 
 void Song::get_lyrics() {

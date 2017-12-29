@@ -7,7 +7,6 @@
 #include <QTranslator>
 #include "image.h"
 #include "song.h"
-//#include "translator.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -27,6 +26,8 @@ private slots:
 
     bool submit_lrc();
     bool submit_translrc();
+
+    bool save_info_cover();
 
     void display_song_status();
 
@@ -51,7 +52,8 @@ private:
     QLineEdit *info_artist_edit;
     QLabel *info_album_label;
     QLineEdit *info_album_edit;
-    ImageCanvas *info_art_image;
+    ImageCanvas *info_cover_image;
+    QPushButton *info_cover_save_button;
 
     // lyrics (lrc) & translated lyrics (translrc)
     QLabel *lrc_label;
