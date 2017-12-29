@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_album_label = new QLabel(tr("Album:"));
     info_album_edit = new QLineEdit();
     info_cover_image = new ImageCanvas();
-    info_cover_save_button = new QPushButton(tr("Save cover"));
+    info_cover_save_button = new QPushButton(tr("Save cover image"));
 
     lrc_label = new QLabel(tr("Original lyrics:"));
     lrc_text = new QTextEdit();
@@ -48,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
         menu_bar->addMenu(file_menu);
         QAction *save_lrc_action = file_menu->addAction(tr("Save original lyrics"));
         QAction *save_translrc_action = file_menu->addAction(tr("Save translated lyrics"));
+        file_menu->addSeparator();
+        QAction *save_info_cover_action = file_menu->addAction(tr("Save cover image"));
         file_menu->addSeparator();
         QAction *quit_action = file_menu->addAction(tr("Quit"));
     QMenu *options_menu = new QMenu(tr("Options"));
@@ -124,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     connect(save_lrc_action,SIGNAL(triggered()),this,SLOT(save_lrc()));
     connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
+    connect(save_info_cover_action,SIGNAL(triggered()),this,SLOT(save_info_cover()));
     connect(quit_action,SIGNAL(triggered()),this,SLOT(quit()));
     connect(about_action,SIGNAL(triggered()),this,SLOT(about()));
 
