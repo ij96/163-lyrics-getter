@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_artist_edit = new QLineEdit();
     info_album_label = new QLabel(tr("Album:"));
     info_album_edit = new QLineEdit();
+    info_art_image = new ImageCanvas();
 
     lrc_label = new QLabel(tr("Original lyrics:"));
     lrc_text = new QTextEdit();
@@ -105,24 +106,35 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     input_status_layout->addLayout(input_id_layout);
     input_status_layout->addLayout(status_layout);
 
+    // Image Canvas
+    QHBoxLayout *art_sub_layout = new QHBoxLayout();
+    art_sub_layout->addStretch();
+    art_sub_layout->addWidget(info_art_image->image());
+
+    QVBoxLayout *art_layout = new QVBoxLayout(info_art_image);
+    art_layout->setContentsMargins(0, 0, 0, 0);
+    art_layout->addLayout(art_sub_layout);
+    art_layout->addStretch();
+
     // 1st
+    QVBoxLayout *toolbar_layout = new QVBoxLayout();
+    toolbar_layout->addLayout(input_status_layout);
+    toolbar_layout->addLayout(info_layout);
+    toolbar_layout->addWidget(info_art_image);
+
     QHBoxLayout *lrc_translrc_layout = new QHBoxLayout();
+    lrc_translrc_layout->addLayout(toolbar_layout);
     lrc_translrc_layout->addLayout(lrc_layout);
     lrc_translrc_layout->addLayout(translrc_layout);
 
-    QHBoxLayout *toolbar_layout = new QHBoxLayout();
-    toolbar_layout->addLayout(input_status_layout);
-    toolbar_layout->addLayout(info_layout);
-
     // 0th
     QVBoxLayout *main_layout = new QVBoxLayout(this);
-    main_layout->addLayout(toolbar_layout);
     main_layout->addLayout(lrc_translrc_layout);
     main_layout->setMenuBar(menu_bar);
 
     setLayout(main_layout);
-    setFixedSize(840,600);
     setWindowTitle(app_name);
+    info_art_image->image()->window()->setWindowTitle(tr("Album cover art"));
     //---END layouts---
 
     //---connect---
@@ -153,6 +165,7 @@ void MainWindow::get_info_lyrics() {
     info_title_edit->setText(song->title);
     info_artist_edit->setText(song->artist);
     info_album_edit->setText(song->album);
+    info_art_image->setPixmap(QPixmap::fromImage(song->art));
     lrc_text->setText(song->lrc);
     translrc_text->setText(song->translrc);
 

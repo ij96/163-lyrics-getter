@@ -9,11 +9,13 @@ RC_FILE = icon/icon.rc
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    song.cpp
+    song.cpp \
+    image.cpp
 
 HEADERS += \
     mainwindow.h \
-    song.h
+    song.h \
+    image.h
 
 TRANSLATIONS += \
     language\zh_CN.ts

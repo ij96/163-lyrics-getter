@@ -52,20 +52,47 @@ bool Song::get_lyrics_json() {
     }
 }
 
+QImage Song::get_art(const QString &url) {
+    if (url.isEmpty())
+        return QImage();
+
+    QEventLoop event_loop;
+    QNetworkAccessManager qnam;
+    QObject::connect(&qnam, SIGNAL(finished(QNetworkReply*)),&event_loop,SLOT(quit()));
+    QNetworkRequest req = QNetworkRequest(QUrl(url));
+    QNetworkReply *reply = qnam.get(req);
+
+    event_loop.exec(); // blocks stack until "finished()" has been called
+
+    if (reply->error() == QNetworkReply::NoError) { // success
+        QImage img(QImage::fromData(reply->readAll()));
+
+        delete reply;
+        return img;
+    } else {  // failure
+        qDebug() << "Failure to download album art: " << reply->errorString();
+        delete reply;
+        return QImage();
+    }
+}
+
 void Song::get_info() {
     QJsonObject json_songs_0_obj = song_info_json_obj.value("songs").toArray()[0].toObject();
 
     QJsonValue title_json = json_songs_0_obj.value("name");
     QJsonValue artist_json = json_songs_0_obj.value("artists").toArray()[0].toObject().value("name");
     QJsonValue album_json = json_songs_0_obj.value("album").toObject().value("name");
+    QJsonValue art_json = json_songs_0_obj.value("album").toObject().value("picUrl");
 
     title = title_json.toString();
     artist = artist_json.toString();
     album = album_json.toString();
+    art = get_art(art_json.toString());
     
     qDebug() << "Song title: " << title_json;
     qDebug() << "Artist: " << artist_json;
     qDebug() << "Album: " << album_json;
+    qDebug() << "Art: " << art_json;
 }
 
 void Song::get_lyrics() {
