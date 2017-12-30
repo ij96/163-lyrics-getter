@@ -23,8 +23,6 @@ public:
     Song();
     ~Song();
 
-    qint32 id = 0;
-
     QString title;
     QString album;
     QString artist;
@@ -46,6 +44,12 @@ public:
     void check_status();
     bool submit_lrc();
     bool submit_translrc();
+
+    void set_id(QString buf);
+    int id();
+
+private:
+    qint32 _id = 0;
 };
 
 #endif // SONG_H

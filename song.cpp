@@ -8,7 +8,7 @@ bool Song::get_info_json() {
     QEventLoop event_loop;
     QNetworkAccessManager qnam;
     QObject::connect(&qnam, SIGNAL(finished(QNetworkReply*)),&event_loop,SLOT(quit()));
-    QNetworkRequest req(QUrl(QString("http://music.163.com/api/song/detail?ids=["+QString::number(id)+"]")));
+    QNetworkRequest req(QUrl(QString("http://music.163.com/api/song/detail?ids=["+QString::number(_id)+"]")));
     QNetworkReply *reply = qnam.get(req);
 
     event_loop.exec(); // blocks stack until "finished()" has been called
@@ -32,7 +32,7 @@ bool Song::get_lyrics_json() {
     QEventLoop event_loop;
     QNetworkAccessManager qnam;
     QObject::connect(&qnam, SIGNAL(finished(QNetworkReply*)),&event_loop,SLOT(quit()));
-    QNetworkRequest req(QUrl(QString("http://music.163.com/api/song/lyric?lv=-1&tv=-1&id="+QString::number(id))));
+    QNetworkRequest req(QUrl(QString("http://music.163.com/api/song/lyric?lv=-1&tv=-1&id="+QString::number(_id))));
     QNetworkReply *reply = qnam.get(req);
 
     event_loop.exec(); // blocks stack until "finished()" has been called
@@ -89,10 +89,10 @@ void Song::get_info() {
     album = album_json.toString();
     cover = get_cover(cover_json.toString());
     
-    qDebug() << "Song title: " << title_json;
-    qDebug() << "Artist: " << artist_json;
-    qDebug() << "Album: " << album_json;
-    qDebug() << "Cover URL: " << cover_json;
+    //qDebug() << "Song title: " << title_json;
+    //qDebug() << "Artist: " << artist_json;
+    //qDebug() << "Album: " << album_json;
+    //qDebug() << "Cover URL: " << cover_json;
 }
 
 void Song::get_lyrics() {
@@ -102,8 +102,8 @@ void Song::get_lyrics() {
     lrc = lrc_json.toString();
     translrc = translrc_json.toString();
 
-    qDebug() << "Lyrics: " << lrc_json;
-    qDebug() << "Translated lyrics: " << translrc_json;
+    //qDebug() << "Lyrics: " << lrc_json;
+    //qDebug() << "Translated lyrics: " << translrc_json;
 }
 
 void Song::check_status() {
@@ -141,9 +141,24 @@ void Song::get_info_lyrics() {
 
 
 bool Song::submit_lrc() {
-    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/up?id=" + QString::number(id)));
+    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/up?id=" + QString::number(_id)));
 }
 
 bool Song::submit_translrc() {
-    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/translrc?id=" + QString::number(id)));
+    return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/translrc?id=" + QString::number(_id)));
+}
+
+void Song::set_id(QString buf) {
+    QRegExp rx("(?:[&?/]id=|^)([0-9]+)");
+    rx.indexIn(buf);
+    buf = rx.capturedTexts()[1];
+    if(buf.isEmpty())
+        _id = 0;
+    else
+        _id = buf.toDouble();
+    qDebug() << "Song ID: " << _id;
+}
+
+int Song::id() {
+    return _id;
 }
