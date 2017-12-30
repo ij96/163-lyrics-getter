@@ -75,17 +75,22 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     toolbar_layout->addWidget(status_label,             1,0);       // status
     toolbar_layout->addWidget(status_edit,              1,1,1,2);
 
-    toolbar_layout->addWidget(info_title_label,         2,0);       // title
-    toolbar_layout->addWidget(info_title_edit,          2,1,1,2);
+    LineSeparator line = new Separator();
+    toolbar_layout->addWidget(line,                     2,0,1,3);   // separator
 
-    toolbar_layout->addWidget(info_artist_label,        3,0);       // artist
-    toolbar_layout->addWidget(info_artist_edit,         3,1,1,2);
+    toolbar_layout->addWidget(info_title_label,         3,0);       // title
+    toolbar_layout->addWidget(info_title_edit,          3,1,1,2);
 
-    toolbar_layout->addWidget(info_album_label,         4,0);       // album
-    toolbar_layout->addWidget(info_album_edit,          4,1,1,2);
+    toolbar_layout->addWidget(info_artist_label,        4,0);       // artist
+    toolbar_layout->addWidget(info_artist_edit,         4,1,1,2);
 
-    toolbar_layout->addWidget(info_cover_image,         5,0,1,3);   // cover
-    toolbar_layout->addWidget(info_cover_save_button,   6,0,1,3);
+    toolbar_layout->addWidget(info_album_label,         5,0);       // album
+    toolbar_layout->addWidget(info_album_edit,          5,1,1,2);
+
+    toolbar_layout->addWidget(line,                     6,0,1,3);   // separator
+
+    toolbar_layout->addWidget(info_cover_image,         7,0,1,3);   // cover
+    toolbar_layout->addWidget(info_cover_save_button,   8,0,1,3);
 
     QVBoxLayout *lrc_layout = new QVBoxLayout();
     lrc_layout->addWidget(lrc_label);

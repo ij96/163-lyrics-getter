@@ -10,12 +10,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     song.cpp \
-    image.cpp
+    image.cpp \
+    lineseparator.cpp
 
 HEADERS += \
     mainwindow.h \
     song.h \
-    image.h
+    image.h \
+    lineseparator.h
 
 TRANSLATIONS += \
     language\zh_CN.ts
