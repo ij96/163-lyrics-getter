@@ -88,7 +88,7 @@ void Song::get_info() {
     artist = artist_json.toString();
     album = album_json.toString();
     cover = get_cover(cover_json.toString());
-    
+
     //qDebug() << "Song title: " << title_json;
     //qDebug() << "Artist: " << artist_json;
     //qDebug() << "Album: " << album_json;
@@ -133,6 +133,7 @@ void Song::get_info_lyrics() {
         album = "";
         lrc = "";
         translrc = "";
+        cover = QPixmap(0,0).toImage();
     } else {
         get_info();
         get_lyrics();

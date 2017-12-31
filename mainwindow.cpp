@@ -348,7 +348,6 @@ QString MainWindow::remove_tags(QString lrc) {
     return lrc_no_tags;
 }
 
-
 void MainWindow::display_lrc_translrc() {
     if(show_tags) {
         lrc_text->setText(song->lrc);
@@ -402,4 +401,7 @@ void MainWindow::retranslate_ui() {
     save_info_cover_action->setText(tr("Save cover image"));
     quit_action->setText(tr("Quit"));
     about_action->setText(tr("About"));
+
+    // cover window
+    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1").arg(song->album));
 }
