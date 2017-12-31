@@ -140,7 +140,6 @@ void Song::get_info_lyrics() {
     }
 }
 
-
 bool Song::submit_lrc() {
     return QDesktopServices::openUrl(QUrl("http://music.163.com/#/lyric/up?id=" + QString::number(_id)));
 }

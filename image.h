@@ -2,6 +2,7 @@
 #define IMAGE_H
 
 #include <QtWidgets>
+#include <QtGui>
 
 class Image: public QLabel {
     Q_OBJECT
@@ -9,12 +10,15 @@ class Image: public QLabel {
 public:
     explicit Image(QWidget *parent = 0);
 
+    void update_image();
+
     QWidget *window() const;
 
 protected:
     virtual void mousePressEvent(QMouseEvent *ev);
 
 private:
+    QScrollArea *viewer;
     QLabel *window_label;
 };
 

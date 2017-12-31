@@ -2,25 +2,47 @@
 
 Image::Image(QWidget *parent) : QLabel(parent) {
     window_label = new QLabel(this);
-    window_label->setWindowModality(Qt::NonModal);
-    window_label->setWindowFlags(Qt::Dialog);
-    window_label->setWindowFlag(Qt::WindowContextHelpButtonHint, false);
+
+    viewer = new QScrollArea(this);
+    viewer->setWindowModality(Qt::NonModal);
+    viewer->setWindowFlags(Qt::Window);
+    viewer->setWidget(window_label);
 }
 
 QWidget *Image::window() const {
-    return window_label;
+    return viewer;
 }
 
 void Image::mousePressEvent(QMouseEvent *event) {
     Q_UNUSED(event);
-    const QPixmap *pm = pixmap();
-    if (!pm || pm->isNull())
-        return;
-
-    window_label->setPixmap(*pm);
-    window_label->setFixedSize(pm->size());
-    window_label->show();
+    update_image();
+    viewer->show();
 }
+
+void Image::update_image() {
+    const QPixmap *pm = pixmap();
+    if (!pm || pm->isNull()) {
+        window_label->setPixmap(QPixmap(0,0));
+    } else {
+        window_label->setPixmap(*pm);
+    }
+    window_label->setFixedSize(pm->size());
+
+    QSize viewer_max_size = QSize(640,640);
+    QSize viewer_min_size = QSize(200,200);
+    viewer->setWidget(window_label);
+    if((pm->height() > viewer_max_size.height()) | (pm->width() > viewer_max_size.width())) {
+        viewer->resize(viewer_max_size);
+    } else if ((pm->height() < viewer_min_size.height()) | (pm->width() < viewer_min_size.width())){
+        viewer->resize(viewer_min_size);
+    } else {
+        QSize viewer_size = QSize(pm->width()+2,pm->height()+2);
+        viewer->resize(viewer_size);
+    }
+    updateGeometry();
+}
+
+//------------
 
 ImageCanvas::ImageCanvas(QWidget *parent) : QWidget(parent) {
     image_label = new Image(this);
@@ -35,6 +57,7 @@ Image *ImageCanvas::image() const {
 
 void ImageCanvas::setPixmap(const QPixmap &pixmap) {
     image_label->setPixmap(pixmap);
+    image_label->update_image();
 
     QResizeEvent event(size(), size());
     resizeEvent(&event);

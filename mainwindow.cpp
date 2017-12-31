@@ -1,22 +1,10 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
-    //---settings file---
-    settings_file_path = QApplication::applicationDirPath() + "/config.ini";
-    setup_settings_file();  // create settings file, if it does not exist
-    load_settings();        // load from settings
-
-    //---translator---
-    if(translator.load(QString(":/language/%1.qm").arg(locale.name())))
-        qApp->installTranslator(&translator);
-    //---END translator---
-
-    //---version---
-    app_version = "v1.0.2 (beta)";
-    app_name = tr("163 Lyrics Getter %1").arg(app_version);
-    //---END version---
-
     //------initialisation------
+    translator = new QTranslator;
+    locale = new QLocale;
+
     song = new Song();
     // widgets
     input_id_label = new QLabel();
@@ -60,6 +48,18 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     quit_action = new QAction();
     about_action = new QAction();
     //------END initialisation------
+
+    //---settings file---
+    settings_file_path = QApplication::applicationDirPath() + "/config.ini";
+    setup_settings_file();  // create settings file, if it does not exist
+    load_settings();        // load from settings
+
+    //---translator---
+    if(translator->load(QString(":/language/%1.qm").arg(locale->name())))
+        qApp->installTranslator(translator);
+
+    //---version---
+    app_version = "v1.0.2";
 
     //------UI------
     //---menu bar---
@@ -300,13 +300,13 @@ void MainWindow::display_song_status() {
 }
 
 void MainWindow::set_language(QAction* action) {
-    QLocale locale_new = QLocale(action->data().toString());
+    QLocale *locale_new = new QLocale(action->data().toString());
     if(locale != locale_new) {
         locale = locale_new;
         save_settings();
-        qApp->removeTranslator(&translator);
-        if(translator.load(QString(":/language/%1.qm").arg(locale.name())))
-            qApp->installTranslator(&translator);
+        qApp->removeTranslator(translator);
+        if(translator->load(QString(":/language/%1.qm").arg(locale->name())))
+            qApp->installTranslator(translator);
         retranslate_ui();
     }
 }
@@ -328,12 +328,14 @@ bool MainWindow::setup_settings_file() {
 
 void MainWindow::load_settings() {
     QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
-    locale = QLocale(settings->value("locale", "").toString());
+    QLocale *l = locale;
+    delete l;
+    locale = new QLocale(settings->value("locale", "").toString());
 }
 
 void MainWindow::save_settings() {
     QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
-    settings->setValue("locale", locale.name());
+    settings->setValue("locale", locale->name());
     settings->sync();
 }
 

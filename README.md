@@ -1,22 +1,9 @@
-# 163-lyrics-getter
+# 163歌词获取器 | 163-lyrics-getter
+
 获取网易云音乐歌词和中文翻译。 | Get lyrics and translated lyrics (Chinese) from NetEase Cloud Music (music.163.com).
 
-## 网易云音乐API：
+更多请参考 [wiki](https://github.com/ij96/163-lyrics-getter/wiki) | For more information please read [wiki](https://github.com/ij96/163-lyrics-getter/wiki)
 
-### 歌词
+## 截屏 | Screenshot
 
-`GET http://music.163.com/api/song/lyric`
-
-| 参数 | | 
-|-|-|
-| id | 歌曲ID |
-| lv | -1：获取lrc（原歌词LRC），1：不获取 |
-| tv | -1：获取tlyric（翻译后的歌词LRC），1：不获取 |
-
-### 歌曲信息
-
-`GET http://music.163.com/api/song/detail`
-
-| 参数 | | 
-|-|-|
-| ids | [歌曲ID]，如有多首歌则以逗号分隔 |
+![163-lyrics-getter-screenshot-v1 0 1](https://user-images.githubusercontent.com/25159698/34457502-13804be0-edaa-11e7-88e0-5fb42838df40.png)

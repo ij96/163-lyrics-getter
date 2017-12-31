@@ -38,8 +38,6 @@ private slots:
     void display_lrc_translrc();
     void show_or_hide_tags();
 
-    void retranslate_ui();
-
 private:
     bool show_tags = true;   // whether the displayed lyrics should have LRC tags
 
@@ -48,6 +46,7 @@ private:
     void save_settings();
     bool setup_settings_file();
     QString remove_tags(QString lrc);
+    void retranslate_ui();
 
     //---widgets---
     // ID input field
@@ -81,7 +80,6 @@ private:
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;
     QLineEdit *status_edit;
-
     //---END widgets---
 
     // menu
@@ -102,8 +100,8 @@ private:
     QString app_name;
 
     // multi-language
-    QLocale locale;
-    QTranslator translator;
+    QLocale *locale;
+    QTranslator *translator;
 
     // settings
     QString settings_file_path;

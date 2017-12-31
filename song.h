@@ -44,7 +44,6 @@ public:
     void get_info_lyrics();
 
     void check_status();
-
     bool submit_lrc();
     bool submit_translrc();
 
