@@ -69,8 +69,8 @@ void ImageCanvas::resizeEvent(QResizeEvent *event) {
         return;
 
     QSize s = event->size();
-    int h = s.width() * pm->width() / pm->height();
-    int w = s.height() * pm->height() / pm->width();
+    int h = s.width() * pm->height() / pm->width();
+    int w = s.height() * pm->width() / pm->height();
 
     if (h < s.height())
         s.setHeight(h);
