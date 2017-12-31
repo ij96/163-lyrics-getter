@@ -23,18 +23,16 @@ void Image::update_image() {
     const QPixmap *pm = pixmap();
     if (!pm || pm->isNull()) {
         window_label->setPixmap(QPixmap(0,0));
+        viewer->hide();
     } else {
         window_label->setPixmap(*pm);
+        window_label->setFixedSize(pm->size());
     }
-    window_label->setFixedSize(pm->size());
 
     QSize viewer_max_size = QSize(640,640);
-    QSize viewer_min_size = QSize(200,200);
     viewer->setWidget(window_label);
     if((pm->height() > viewer_max_size.height()) | (pm->width() > viewer_max_size.width())) {
         viewer->resize(viewer_max_size);
-    } else if ((pm->height() < viewer_min_size.height()) | (pm->width() < viewer_min_size.width())){
-        viewer->resize(viewer_min_size);
     } else {
         QSize viewer_size = QSize(pm->width()+2,pm->height()+2);
         viewer->resize(viewer_size);
@@ -42,7 +40,6 @@ void Image::update_image() {
     updateGeometry();
 }
 
-//------------
 
 ImageCanvas::ImageCanvas(QWidget *parent) : QWidget(parent) {
     image_label = new Image(this);
@@ -65,17 +62,27 @@ void ImageCanvas::setPixmap(const QPixmap &pixmap) {
 
 void ImageCanvas::resizeEvent(QResizeEvent *event) {
     const QPixmap *pm = image_label->pixmap();
-    if (!pm || pm->isNull())
+    if (!pm || pm->isNull()) {
+        //image_label->setFixedSize(0,0);
         return;
+    } else {
+        QSize s = event->size();
+        int h, w;
 
-    QSize s = event->size();
-    int h = s.width() * pm->height() / pm->width();
-    int w = s.height() * pm->width() / pm->height();
+        if(pm->height() != 0)
+            h = s.width() * pm->height() / pm->width();
+        else
+            h = 0;
+        if(pm->width() != 0)
+            w = s.height() * pm->width() / pm->height();
+        else
+            w = 0;
 
-    if (h < s.height())
-        s.setHeight(h);
-    if (w < s.width())
-        s.setWidth(w);
+        if (h < s.height())
+            s.setHeight(h);
+        if (w < s.width())
+            s.setWidth(w);
 
-    image_label->setFixedSize(s);
+        image_label->setFixedSize(s);
+    }
 }
