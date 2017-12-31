@@ -3,7 +3,7 @@
 
 #include <QtWidgets>
 
-class Image: public QLabel{
+class Image: public QLabel {
     Q_OBJECT
 
 public:

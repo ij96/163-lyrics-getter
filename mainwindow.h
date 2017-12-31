@@ -6,7 +6,9 @@
 #include <QShortcut>
 #include <QTranslator>
 #include "image.h"
+#include "lineseparator.h"
 #include "song.h"
+#include "togglebutton.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -33,11 +35,17 @@ private slots:
 
     void set_language(QAction* action);
 
+    void display_lrc_translrc();
+    void show_or_hide_tags();
+
 private:
+    bool show_tags = true;   // whether the displayed lyrics should have LRC tags
+
     bool save(bool save_translated);
     void load_settings();
     void save_settings();
     bool setup_settings_file();
+    QString remove_tags(QString lrc);
 
     //---widgets---
     // ID input field
@@ -60,10 +68,13 @@ private:
     QTextEdit *lrc_text;
     QPushButton *lrc_save_button;
     QPushButton *lrc_submit_button;
+
     QLabel *translrc_label;
     QTextEdit *translrc_text;
     QPushButton *translrc_save_button;
     QPushButton *translrc_submit_button;
+
+    ToggleButton *hide_tags_button;
 
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;

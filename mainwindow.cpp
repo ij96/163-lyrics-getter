@@ -33,10 +33,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     lrc_text = new QTextEdit();
     lrc_save_button = new QPushButton(tr("Save original lyrics"));
     lrc_submit_button = new QPushButton(tr("Submit lyrics to 163"));
+
     translrc_label = new QLabel(tr("Translated lyrics:"));
     translrc_text = new QTextEdit();
     translrc_save_button = new QPushButton(tr("Save translated lyrics"));
     translrc_submit_button = new QPushButton(tr("Submit translation to 163"));
+
+    hide_tags_button = new ToggleButton(this,tr("Hide LRC tags"),tr("Show LRC tags"));
 
     status_label = new QLabel(tr("Status:"));
     status_edit = new QLineEdit();
@@ -75,8 +78,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     toolbar_layout->addWidget(status_label,             1,0);       // status
     toolbar_layout->addWidget(status_edit,              1,1,1,2);
 
-    LineSeparator line = new Separator();
-    toolbar_layout->addWidget(line,                     2,0,1,3);   // separator
+    toolbar_layout->addWidget(hide_tags_button,         2,0,1,3);   // hide LRC tags
 
     toolbar_layout->addWidget(info_title_label,         3,0);       // title
     toolbar_layout->addWidget(info_title_edit,          3,1,1,2);
@@ -87,10 +89,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     toolbar_layout->addWidget(info_album_label,         5,0);       // album
     toolbar_layout->addWidget(info_album_edit,          5,1,1,2);
 
-    toolbar_layout->addWidget(line,                     6,0,1,3);   // separator
+    toolbar_layout->addWidget(info_cover_image,         6,0,1,3);   // cover
 
-    toolbar_layout->addWidget(info_cover_image,         7,0,1,3);   // cover
-    toolbar_layout->addWidget(info_cover_save_button,   8,0,1,3);
+    toolbar_layout->addWidget(info_cover_save_button,   7,0,1,3);
 
     QVBoxLayout *lrc_layout = new QVBoxLayout();
     lrc_layout->addWidget(lrc_label);
@@ -128,6 +129,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(translrc_save_button,SIGNAL(clicked()),this,SLOT(save_translrc()));
     connect(translrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_translrc()));
     connect(info_cover_save_button,SIGNAL(clicked()),this,SLOT(save_info_cover()));
+    connect(hide_tags_button,SIGNAL(toggled()),this,SLOT(show_or_hide_tags()));
 
     connect(save_lrc_action,SIGNAL(triggered()),this,SLOT(save_lrc()));
     connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
@@ -154,8 +156,8 @@ void MainWindow::get_info_lyrics() {
     info_album_edit->setText(song->album);
     info_cover_image->setPixmap(QPixmap::fromImage(song->cover));
     info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1").arg(song->album));
-    lrc_text->setText(song->lrc);
-    translrc_text->setText(song->translrc);
+
+    display_lrc_translrc();
 
     display_song_status();
 }
@@ -165,10 +167,20 @@ void MainWindow::quit() {
 }
 
 bool MainWindow::save(bool save_translated) {
+    bool no_tags = hide_tags_button->isChecked();
     QString default_file_name = "*";
     if(song->status_code != SONG_STATUS_NOT_EXIST)
-        default_file_name = QString("%1 - %2%3.lrc").arg(song->title,song->artist,save_translated?tr(" (translated)"):"");
-    QString file_name = QFileDialog::getSaveFileName(this,tr("Save As"),default_file_name,tr("LRC lyrics file (*.lrc)"));
+        default_file_name = QString("%1 - %2%3.%4").arg(song->title,song->artist,
+                                                        save_translated?tr(" (translated)"):"",
+                                                        no_tags?"txt":"lrc");
+    QString file_name;
+    QString filter_txt = tr("Text file (*.txt)");
+    QString filter_lrc = tr("LRC lyrics file (*.lrc)");
+    QString filters = QString("%1;;%2").arg(filter_txt,filter_lrc);
+    file_name = QFileDialog::getSaveFileName(this,
+                                             tr("Save As"),
+                                             default_file_name,
+                                             filters,no_tags?&filter_txt:&filter_lrc);
 
     if(file_name.isEmpty())
         return false;
@@ -176,7 +188,8 @@ bool MainWindow::save(bool save_translated) {
     QFile file(file_name);
     if(!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Application"),
-            tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(file_name),file.errorString()));
+            tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(file_name),
+                                                 file.errorString()));
         return false;
     }
 
@@ -292,4 +305,31 @@ void MainWindow::save_settings() {
     QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
     settings->setValue("locale", locale.name());
     settings->sync();
+}
+
+QString MainWindow::remove_tags(QString lrc) {
+    QRegExp rx_lrc_tags("\\[[^\\]]*\\]");
+    QRegExp rx_multiple_blank_rows("\\n\\n[\\n]+");
+    QRegExp rx_opening_blank_rows("^[\\n]+");
+    QString lrc_no_tags = lrc;
+    lrc_no_tags = lrc_no_tags.replace(rx_lrc_tags,"");
+    lrc_no_tags = lrc_no_tags.replace(rx_multiple_blank_rows,"\n\n");
+    lrc_no_tags = lrc_no_tags.replace(rx_opening_blank_rows,"");
+    return lrc_no_tags;
+}
+
+
+void MainWindow::display_lrc_translrc() {
+    if(show_tags) {
+        lrc_text->setText(song->lrc);
+        translrc_text->setText(song->translrc);
+    } else {
+        lrc_text->setText(remove_tags(song->lrc));
+        translrc_text->setText(remove_tags(song->translrc));
+    }
+}
+
+void MainWindow::show_or_hide_tags() {
+    show_tags = !hide_tags_button->isChecked();
+    display_lrc_translrc();
 }

@@ -11,8 +11,8 @@ QWidget *Image::window() const {
     return window_label;
 }
 
-void Image::mousePressEvent(QMouseEvent *ev) {
-    Q_UNUSED(ev);
+void Image::mousePressEvent(QMouseEvent *event) {
+    Q_UNUSED(event);
     const QPixmap *pm = pixmap();
     if (!pm || pm->isNull())
         return;

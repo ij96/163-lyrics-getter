@@ -37,11 +37,14 @@ public:
 
     bool get_info_json();
     bool get_lyrics_json();
+
     QImage get_cover(const QString &url);
     void get_info();
     void get_lyrics();
     void get_info_lyrics();
+
     void check_status();
+
     bool submit_lrc();
     bool submit_translrc();
 
