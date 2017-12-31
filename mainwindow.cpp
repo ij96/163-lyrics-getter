@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     qApp->installTranslator(&translator);
     //---END translator---
 
-    app_version = "v1.0.1";
+    app_version = "v1.0.2 (beta)";
     app_name = tr("163 Lyrics Getter %1").arg(app_version);
     song = new Song();
 
@@ -123,6 +123,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     //---END layouts---
 
     //---connect---
+    connect(input_id_edit,&QLineEdit::returnPressed,input_button,&QPushButton::click);
+
     connect(input_button,SIGNAL(clicked()),this,SLOT(get_info_lyrics()));
     connect(lrc_save_button,SIGNAL(clicked()),this,SLOT(save_lrc()));
     connect(lrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_lrc()));

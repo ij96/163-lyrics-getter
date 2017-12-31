@@ -156,7 +156,6 @@ void Song::set_id(QString buf) {
         _id = 0;
     else
         _id = buf.toDouble();
-    qDebug() << "Song ID: " << _id;
 }
 
 int Song::id() {
