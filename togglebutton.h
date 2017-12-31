@@ -9,6 +9,9 @@ class ToggleButton : public QPushButton {
 public:
     explicit ToggleButton(QWidget *parent = 0, QString unchecked_txt = "", QString checked_txt = "");
 
+    void setTexts(QString unchecked_txt, QString checked_txt);
+
+private:
     QString unchecked_text;
     QString checked_text;
 

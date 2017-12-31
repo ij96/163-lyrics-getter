@@ -1,11 +1,14 @@
 #include "togglebutton.h"
 
 ToggleButton::ToggleButton(QWidget *parent, QString unchecked_txt, QString checked_txt) : QPushButton(parent){
+    setCheckable(true);
+    setTexts(unchecked_txt,checked_txt);
+}
+
+void ToggleButton::setTexts(QString unchecked_txt, QString checked_txt) {
     unchecked_text = unchecked_txt;
     checked_text = checked_txt;
-
-    setCheckable(true);
-    setText(unchecked_text);
+    setText(isChecked()?checked_text:unchecked_text);
 }
 
 void ToggleButton::mousePressEvent(QMouseEvent *event) {

@@ -7,65 +7,89 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     load_settings();        // load from settings
 
     //---translator---
-    translator.load(QString(":/language/%1.qm").arg(locale.name()));
-    qApp->installTranslator(&translator);
+    if(translator.load(QString(":/language/%1.qm").arg(locale.name())))
+        qApp->installTranslator(&translator);
     //---END translator---
 
+    //---version---
     app_version = "v1.0.2 (beta)";
     app_name = tr("163 Lyrics Getter %1").arg(app_version);
+    //---END version---
+
+    //------initialisation------
     song = new Song();
-
-    //---widgets---
-    input_id_label = new QLabel(tr("Song ID:"));
+    // widgets
+    input_id_label = new QLabel();
     input_id_edit = new QLineEdit();
-    input_button = new QPushButton(tr("Get lyrics"));
+    input_button = new QPushButton();
 
-    info_title_label = new QLabel(tr("Title:"));
+    info_title_label = new QLabel();
     info_title_edit = new QLineEdit();
-    info_artist_label = new QLabel(tr("Artist:"));
+    info_artist_label = new QLabel();
     info_artist_edit = new QLineEdit();
-    info_album_label = new QLabel(tr("Album:"));
+    info_album_label = new QLabel();
     info_album_edit = new QLineEdit();
     info_cover_image = new ImageCanvas();
-    info_cover_save_button = new QPushButton(tr("Save cover image"));
+    info_cover_save_button = new QPushButton();
 
-    lrc_label = new QLabel(tr("Original lyrics:"));
+    lrc_label = new QLabel();
     lrc_text = new QTextEdit();
-    lrc_save_button = new QPushButton(tr("Save original lyrics"));
-    lrc_submit_button = new QPushButton(tr("Submit lyrics to 163"));
+    lrc_save_button = new QPushButton();
+    lrc_submit_button = new QPushButton();
 
-    translrc_label = new QLabel(tr("Translated lyrics:"));
+    translrc_label = new QLabel();
     translrc_text = new QTextEdit();
-    translrc_save_button = new QPushButton(tr("Save translated lyrics"));
-    translrc_submit_button = new QPushButton(tr("Submit translation to 163"));
+    translrc_save_button = new QPushButton();
+    translrc_submit_button = new QPushButton();
 
-    hide_tags_button = new ToggleButton(this,tr("Hide LRC tags"),tr("Show LRC tags"));
+    hide_tags_button = new ToggleButton();
 
-    status_label = new QLabel(tr("Status:"));
+    status_label = new QLabel();
     status_edit = new QLineEdit();
-    //---END widgets---
+    status_edit->setReadOnly(true);
 
+    // menu bar
+    file_menu = new QMenu();
+    options_menu = new QMenu();
+    language_menu = new QMenu();
+    about_menu = new QMenu();
+
+    save_lrc_action = new QAction();
+    save_translrc_action = new QAction();
+    save_info_cover_action = new QAction();
+    quit_action = new QAction();
+    about_action = new QAction();
+    //------END initialisation------
+
+    //------UI------
     //---menu bar---
-    QMenuBar* menu_bar = new QMenuBar();
-    QMenu *file_menu = new QMenu(tr("File"));
-        menu_bar->addMenu(file_menu);
-        QAction *save_lrc_action = file_menu->addAction(tr("Save original lyrics"));
-        QAction *save_translrc_action = file_menu->addAction(tr("Save translated lyrics"));
-        file_menu->addSeparator();
-        QAction *save_info_cover_action = file_menu->addAction(tr("Save cover image"));
-        file_menu->addSeparator();
-        QAction *quit_action = file_menu->addAction(tr("Quit"));
-    QMenu *options_menu = new QMenu(tr("Options"));
-        menu_bar->addMenu(options_menu);
-        QMenu *language_menu = new QMenu(tr("Language"));
-            options_menu->addMenu(language_menu);
-            QAction *language_en_GB_action = language_menu->addAction("English (UK)"); // do not translate
-                language_en_GB_action->setData("en_GB");
-            QAction *language_zh_CN_action = language_menu->addAction("\u4E2D\u6587"); // do not translate
-                language_zh_CN_action->setData("zh_CN");
-    QMenu *about_menu = new QMenu(tr("About"));
-        menu_bar->addMenu(about_menu);
-        QAction *about_action = about_menu->addAction(tr("About"));
+    // file menu
+    file_menu->addAction(save_lrc_action);
+    file_menu->addAction(save_translrc_action);
+    file_menu->addSeparator();
+    file_menu->addAction(save_info_cover_action);
+    file_menu->addSeparator();
+    file_menu->addAction(quit_action);
+
+    // options menu
+    QAction *language_en_GB_action = new QAction("English (UK)"); // do not translate
+    language_en_GB_action->setData("en_GB");
+    QAction *language_zh_CN_action = new QAction("\u4E2D\u6587"); // do not translate
+    language_zh_CN_action->setData("zh_CN");
+
+    language_menu->addAction(language_en_GB_action);
+    language_menu->addAction(language_zh_CN_action);
+
+    options_menu->addMenu(language_menu);
+
+    // about menu
+    about_menu->addAction(about_action);
+
+    // full menu bar
+    QMenuBar *menu_bar = new QMenuBar();
+    menu_bar->addMenu(file_menu);
+    menu_bar->addMenu(options_menu);
+    menu_bar->addMenu(about_menu);
     //---END menu bar---
 
     //---layouts---
@@ -121,6 +145,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     resize(840,600);
     setWindowTitle(app_name);
     //---END layouts---
+    //------END UI------
 
     //---connect---
     connect(input_id_edit,&QLineEdit::returnPressed,input_button,&QPushButton::click);
@@ -140,8 +165,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(about_action,SIGNAL(triggered()),this,SLOT(about()));
 
     connect(language_menu,SIGNAL(triggered(QAction*)),this,SLOT(set_language(QAction*)));
-
     //---END connect---
+
+    retranslate_ui();
 }
 
 MainWindow::~MainWindow() {}
@@ -278,8 +304,10 @@ void MainWindow::set_language(QAction* action) {
     if(locale != locale_new) {
         locale = locale_new;
         save_settings();
-        QMessageBox::warning(this, tr("Language changed"),
-            tr("Language changed, please restart application to apply the change."));
+        qApp->removeTranslator(&translator);
+        if(translator.load(QString(":/language/%1.qm").arg(locale.name())))
+            qApp->installTranslator(&translator);
+        retranslate_ui();
     }
 }
 
@@ -334,4 +362,44 @@ void MainWindow::display_lrc_translrc() {
 void MainWindow::show_or_hide_tags() {
     show_tags = !hide_tags_button->isChecked();
     display_lrc_translrc();
+}
+
+void MainWindow::retranslate_ui() {
+    // app name
+    app_name = tr("163 Lyrics Getter %1").arg(app_version);
+    setWindowTitle(app_name);
+
+    // widgets
+    input_id_label->setText(tr("Song ID:"));
+    input_button->setText(tr("Get lyrics"));
+    info_title_label->setText(tr("Title:"));
+    info_artist_label->setText(tr("Artist:"));
+    info_album_label->setText(tr("Album:"));
+    info_cover_save_button->setText(tr("Save cover image"));
+
+    lrc_label->setText(tr("Original lyrics:"));
+    lrc_save_button->setText(tr("Save original lyrics"));
+    lrc_submit_button->setText(tr("Submit lyrics to 163"));
+
+    translrc_label->setText(tr("Translated lyrics:"));
+    translrc_save_button->setText(tr("Save translated lyrics"));
+    translrc_submit_button->setText(tr("Submit translation to 163"));
+
+    hide_tags_button->setTexts(tr("Hide LRC tags"),tr("Show LRC tags"));
+
+    status_label->setText(tr("Status:"));
+    if(!status_edit->text().isEmpty())
+        display_song_status();
+
+    // menu bar
+    file_menu->setTitle(tr("File"));
+    options_menu->setTitle(tr("Options"));
+    language_menu->setTitle(tr("Language"));
+    about_menu->setTitle(tr("About"));
+
+    save_lrc_action->setText(tr("Save original lyrics"));
+    save_translrc_action->setText(tr("Save translated lyrics"));
+    save_info_cover_action->setText(tr("Save cover image"));
+    quit_action->setText(tr("Quit"));
+    about_action->setText(tr("About"));
 }
