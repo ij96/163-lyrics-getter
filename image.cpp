@@ -63,8 +63,7 @@ void ImageCanvas::setPixmap(const QPixmap &pixmap) {
 void ImageCanvas::resizeEvent(QResizeEvent *event) {
     const QPixmap *pm = image_label->pixmap();
     if (!pm || pm->isNull()) {
-        //image_label->setFixedSize(0,0);
-        return;
+        image_label->setFixedSize(0,0);
     } else {
         QSize s = event->size();
         int h, w;
