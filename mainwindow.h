@@ -6,7 +6,6 @@
 #include <QShortcut>
 #include <QTranslator>
 #include "image.h"
-#include "lineseparator.h"
 #include "song.h"
 #include "togglebutton.h"
 
