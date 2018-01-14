@@ -52,6 +52,8 @@ public:
     void set_id(QString buf);
     int id();
 
+    void translrc_insert_blanks();
+
 private:
     qint32 _id = 0;
 };

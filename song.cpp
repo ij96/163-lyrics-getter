@@ -101,6 +101,7 @@ void Song::get_lyrics() {
 
     lrc.set(lrc_json.toString());
     translrc.set(translrc_json.toString());
+    translrc_insert_blanks();
 
     //qDebug() << "Lyrics: " << lrc_json;
     //qDebug() << "Translated lyrics: " << translrc_json;
@@ -160,4 +161,12 @@ void Song::set_id(QString buf) {
 
 int Song::id() {
     return _id;
+}
+
+void Song::translrc_insert_blanks() {
+    foreach(const QTime &time, lrc.time_map().keys()) {
+        if(!translrc.time_map().contains(time)) {
+            translrc.time_map_insert(time, "");
+        }
+    }
 }
