@@ -11,13 +11,15 @@ SOURCES += \
     mainwindow.cpp \
     song.cpp \
     image.cpp \
-    togglebutton.cpp
+    togglebutton.cpp \
+    lyrics.cpp
 
 HEADERS += \
     mainwindow.h \
     song.h \
     image.h \
-    togglebutton.h
+    togglebutton.h \
+    lyrics.h
 
 TRANSLATIONS += \
     language\zh_CN.ts

@@ -342,27 +342,9 @@ void MainWindow::save_settings() {
     settings->sync();
 }
 
-QString MainWindow::remove_tags(QString lrc) {
-    QRegExp rx_lrc_tags("\\[[^\\]]*\\]");
-    QRegExp rx_multiple_blank_rows("\\n\\n[\\n]+");
-    QRegExp rx_opening_blank_rows("^[\\n]+");
-    QString lrc_no_tags = lrc;
-    lrc_no_tags = lrc_no_tags.replace(rx_lrc_tags,"");
-    lrc_no_tags = lrc_no_tags.replace(rx_multiple_blank_rows,"\n\n");
-    lrc_no_tags = lrc_no_tags.replace(rx_opening_blank_rows,"");
-    return lrc_no_tags;
-}
-
 void MainWindow::display_lrc_translrc() {
-    QString lrc_to_be_set = song->lrc;
-    QString translrc_to_be_set = song->translrc;
-    if(order_tags) {
-        lrc_to_be_set = song->lrc_ordered;
-    }
-    if(!show_tags) {
-        lrc_to_be_set = remove_tags(lrc_to_be_set);
-        translrc_to_be_set = remove_tags(translrc_to_be_set);
-    }
+    QString lrc_to_be_set = song->lrc.show(show_tags, order_tags);
+    QString translrc_to_be_set = song->translrc.show(show_tags, order_tags);
     lrc_text->setText(lrc_to_be_set);
     translrc_text->setText(translrc_to_be_set);
 }

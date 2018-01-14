@@ -10,6 +10,7 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QDesktopServices>
+#include "lyrics.h"
 
 //status code
 #define SONG_STATUS_HAS_LRC_TRANSLRC    0
@@ -26,9 +27,8 @@ public:
     QString title;
     QString album;
     QString artist;
-    QString lrc;                // lyrics
-    QString translrc;           // translated lyrics
-    QString lrc_ordered;
+    Lyrics lrc;                 // lyrics
+    Lyrics translrc;            // translated lyrics
 
     QImage cover;
 
@@ -48,8 +48,6 @@ public:
     void check_status();
     bool submit_lrc();
     bool submit_translrc();
-
-    void order_lrc();
 
     void set_id(QString buf);
     int id();
