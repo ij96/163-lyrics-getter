@@ -173,7 +173,7 @@ void Song::order_lrc() {
             }
         }
     }
-    meta_tagged.sort();
+    //meta_tagged.sort(); // order meta tags by alphabet
 
     // determine suitable number of decimal places for fractional seconds
     int decimal_places = 2;
@@ -189,7 +189,7 @@ void Song::order_lrc() {
         lrc_ordered += "[" + meta_tagged[i] + "]\n";
     }
     foreach(const QTime &time, time_tagged.keys()) {
-        QString tag = time.toString("[mm:ss:zzz]");
+        QString tag = time.toString("[mm:ss.zzz]");
         if(decimal_places == 2) {
             tag.remove(tag.length() - 2,1);
         }
