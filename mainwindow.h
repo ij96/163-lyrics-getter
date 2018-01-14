@@ -36,10 +36,13 @@ private slots:
     void set_language(QAction* action);
 
     void display_lrc_translrc();
+
     void show_or_hide_tags();
+    void order_or_unorder_tags();
 
 private:
     bool show_tags = true;   // whether the displayed lyrics should have LRC tags
+    bool order_tags = false;  // whether to show LRC ordered, and 1 tag per line
 
     bool save(bool save_translated);
     void load_settings();
@@ -76,6 +79,7 @@ private:
     QPushButton *translrc_submit_button;
 
     ToggleButton *hide_tags_button;
+    ToggleButton *order_tags_button;
 
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;

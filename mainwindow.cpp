@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     translrc_submit_button = new QPushButton();
 
     hide_tags_button = new ToggleButton();
+    order_tags_button = new ToggleButton();
 
     status_label = new QLabel();
     status_edit = new QLineEdit();
@@ -102,7 +103,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     toolbar_layout->addWidget(status_label,             1,0);       // status
     toolbar_layout->addWidget(status_edit,              1,1,1,2);
 
-    toolbar_layout->addWidget(hide_tags_button,         2,0,1,3);   // hide LRC tags
+    toolbar_layout->addWidget(hide_tags_button,         2,0,1,2);   // hide LRC tags
+    toolbar_layout->addWidget(order_tags_button,        2,2);       // order LRC tags
 
     toolbar_layout->addWidget(info_title_label,         3,0);       // title
     toolbar_layout->addWidget(info_title_edit,          3,1,1,2);
@@ -157,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(translrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_translrc()));
     connect(info_cover_save_button,SIGNAL(clicked()),this,SLOT(save_info_cover()));
     connect(hide_tags_button,SIGNAL(toggled()),this,SLOT(show_or_hide_tags()));
+    connect(order_tags_button,SIGNAL(toggled()),this,SLOT(order_or_unorder_tags()));
 
     connect(save_lrc_action,SIGNAL(triggered()),this,SLOT(save_lrc()));
     connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
@@ -351,17 +354,26 @@ QString MainWindow::remove_tags(QString lrc) {
 }
 
 void MainWindow::display_lrc_translrc() {
-    if(show_tags) {
-        lrc_text->setText(song->lrc);
-        translrc_text->setText(song->translrc);
-    } else {
-        lrc_text->setText(remove_tags(song->lrc));
-        translrc_text->setText(remove_tags(song->translrc));
+    QString lrc_to_be_set = song->lrc;
+    QString translrc_to_be_set = song->translrc;
+    if(order_tags) {
+        lrc_to_be_set = song->lrc_ordered;
     }
+    if(!show_tags) {
+        lrc_to_be_set = remove_tags(lrc_to_be_set);
+        translrc_to_be_set = remove_tags(translrc_to_be_set);
+    }
+    lrc_text->setText(lrc_to_be_set);
+    translrc_text->setText(translrc_to_be_set);
 }
 
 void MainWindow::show_or_hide_tags() {
     show_tags = !hide_tags_button->isChecked();
+    display_lrc_translrc();
+}
+
+void MainWindow::order_or_unorder_tags() {
+    order_tags = order_tags_button->isChecked();
     display_lrc_translrc();
 }
 
@@ -387,6 +399,7 @@ void MainWindow::retranslate_ui() {
     translrc_submit_button->setText(tr("Submit translation to 163"));
 
     hide_tags_button->setTexts(tr("Hide LRC tags"),tr("Show LRC tags"));
+    order_tags_button->setTexts(tr("Order tags"),tr("Unorder tags"));
 
     status_label->setText(tr("Status:"));
     if(!status_edit->text().isEmpty())

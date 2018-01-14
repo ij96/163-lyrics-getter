@@ -28,6 +28,8 @@ public:
     QString artist;
     QString lrc;                // lyrics
     QString translrc;           // translated lyrics
+    QString lrc_ordered;
+
     QImage cover;
 
     QJsonObject song_info_json_obj;
@@ -46,6 +48,8 @@ public:
     void check_status();
     bool submit_lrc();
     bool submit_translrc();
+
+    void order_lrc();
 
     void set_id(QString buf);
     int id();
