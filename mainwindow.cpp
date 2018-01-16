@@ -22,11 +22,13 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     lrc_label = new QLabel();
     lrc_text = new QTextEdit();
+    lrc_text_hl = new LyricsHighlighter(lrc_text->document());
     lrc_save_button = new QPushButton();
     lrc_submit_button = new QPushButton();
 
     translrc_label = new QLabel();
     translrc_text = new QTextEdit();
+    translrc_text_hl = new LyricsHighlighter(translrc_text->document());
     translrc_save_button = new QPushButton();
     translrc_submit_button = new QPushButton();
 
