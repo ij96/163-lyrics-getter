@@ -8,6 +8,7 @@
 #include "image.h"
 #include "song.h"
 #include "togglebutton.h"
+#include "lyricshighlighter.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -69,11 +70,13 @@ private:
     // lyrics (lrc) & translated lyrics (translrc)
     QLabel *lrc_label;
     QTextEdit *lrc_text;
+    LyricsHighlighter *lrc_text_hl;
     QPushButton *lrc_save_button;
     QPushButton *lrc_submit_button;
 
     QLabel *translrc_label;
     QTextEdit *translrc_text;
+    LyricsHighlighter *translrc_text_hl;
     QPushButton *translrc_save_button;
     QPushButton *translrc_submit_button;
 

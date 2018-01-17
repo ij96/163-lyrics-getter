@@ -12,14 +12,16 @@ SOURCES += \
     song.cpp \
     image.cpp \
     togglebutton.cpp \
-    lyrics.cpp
+    lyrics.cpp \
+    lyricshighlighter.cpp
 
 HEADERS += \
     mainwindow.h \
     song.h \
     image.h \
     togglebutton.h \
-    lyrics.h
+    lyrics.h \
+    lyricshighlighter.h
 
 TRANSLATIONS += \
     language\zh_CN.ts
