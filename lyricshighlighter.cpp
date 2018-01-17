@@ -61,13 +61,13 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
       setFormat(match.capturedStart(2), match.capturedLength(2), unknown_format);
     }
 
-    // Lyric text
+    // Lyrics text
     QTextCharFormat text_format;
     text_format.setFontFamily(document()->defaultFont().family());
     text_format.setFontItalic(false);
     text_format.setFontFixedPitch(false);
     text_format.setForeground(Qt::black);
-    text_format.setFontWeight(QFont::Bold);
+    text_format.setFontWeight(QFont::Normal);
 
     expression.setPattern("(?:^|\\])([^[\\]]+)(?:$|\\[)");
     i = expression.globalMatch(text);
