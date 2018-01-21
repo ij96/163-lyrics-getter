@@ -37,8 +37,22 @@ void Lyrics::update_tag_maps() {
         QRegularExpression all_tags_re("^\\[.*\\]");
         QString content = lines[i].replace(all_tags_re,"");
         for(int i = 0; i < tags.length(); i++) {
-            QTime time = QTime::fromString(tags[i],"mm:ss.z");
-            if(time.isValid()) {
+            QStringList time_patterns;
+            bool valid_time = false;
+            QTime time;
+            int j = 0;
+            time_patterns << "mm:ss.z" << "mm:ss";
+
+            // enumerate through possible time tag patterns
+            while(!valid_time && j < time_patterns.length()) {
+                time = QTime::fromString(tags[i],time_patterns[j]);
+                if(time.isValid()) {
+                    _time_map.insert(time,content);
+                    valid_time = true;
+                }
+                j++;
+            }
+            if(valid_time) {
                 _time_map.insert(time,content);
             } else {
                 _meta_list << tags[i];
