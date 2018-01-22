@@ -98,10 +98,14 @@ void Song::get_info() {
 void Song::get_lyrics() {
     QJsonValue lrc_json = song_lyrics_json_obj.value("lrc").toObject().value("lyric");
     QJsonValue translrc_json = song_lyrics_json_obj.value("tlyric").toObject().value("lyric");
+    QJsonValue lrc_user_json = song_lyrics_json_obj.value("lyricUser").toObject().value("nickname");
+    QJsonValue translrc_user_json = song_lyrics_json_obj.value("transUser").toObject().value("nickname");
 
     lrc.set(lrc_json.toString());
     translrc.set(translrc_json.toString());
     translrc_insert_blanks();
+    lrc_uploader = lrc_user_json.toString();
+    translrc_uploader = translrc_user_json.toString();
 
     //qDebug() << "Lyrics: " << lrc_json;
     //qDebug() << "Translated lyrics: " << translrc_json;

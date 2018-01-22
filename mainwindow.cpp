@@ -17,6 +17,12 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_artist_edit = new QLineEdit();
     info_album_label = new QLabel();
     info_album_edit = new QLineEdit();
+    info_lrc_uploader_label = new QLabel();
+    //info_lrc_uploader_label->setWordWrap(true);
+    info_lrc_uploader_edit = new QLineEdit();
+    info_translrc_uploader_label = new QLabel();
+    //info_translrc_uploader_label->setWordWrap(true);
+    info_translrc_uploader_edit = new QLineEdit();
     info_cover_image = new ImageCanvas();
     info_cover_save_button = new QPushButton();
 
@@ -117,9 +123,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     toolbar_layout->addWidget(info_album_label,         5,0);       // album
     toolbar_layout->addWidget(info_album_edit,          5,1,1,2);
 
-    toolbar_layout->addWidget(info_cover_image,         6,0,1,3);   // cover
+    toolbar_layout->addWidget(info_lrc_uploader_label,  6,0);       // lyrics uploader
+    toolbar_layout->addWidget(info_lrc_uploader_edit,   6,1,1,2);
 
-    toolbar_layout->addWidget(info_cover_save_button,   7,0,1,3);
+    toolbar_layout->addWidget(info_translrc_uploader_label,  7,0);  // translation uploader
+    toolbar_layout->addWidget(info_translrc_uploader_edit,   7,1,1,2);
+
+    toolbar_layout->addWidget(info_cover_image,         8,0,1,3);   // cover
+
+    toolbar_layout->addWidget(info_cover_save_button,   9,0,1,3);
 
     QVBoxLayout *lrc_layout = new QVBoxLayout();
     lrc_layout->addWidget(lrc_label);
@@ -188,6 +200,8 @@ void MainWindow::get_info_lyrics() {
     info_title_edit->setText(song->title);
     info_artist_edit->setText(song->artist);
     info_album_edit->setText(song->album);
+    info_lrc_uploader_edit->setText(song->lrc_uploader);
+    info_translrc_uploader_edit->setText(song->translrc_uploader);
     info_cover_image->setPixmap(QPixmap::fromImage(song->cover));
     info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1").arg(song->album));
 
@@ -373,6 +387,8 @@ void MainWindow::retranslate_ui() {
     info_title_label->setText(tr("Title:"));
     info_artist_label->setText(tr("Artist:"));
     info_album_label->setText(tr("Album:"));
+    info_lrc_uploader_label->setText(tr("Lyrics\nuploader:"));
+    info_translrc_uploader_label->setText(tr("Translation\nuploader:"));
     info_cover_save_button->setText(tr("Save cover image"));
 
     lrc_label->setText(tr("Original lyrics:"));

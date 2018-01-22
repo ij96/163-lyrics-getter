@@ -29,6 +29,8 @@ public:
     QString artist;
     Lyrics lrc;                 // lyrics
     Lyrics translrc;            // translated lyrics
+    QString lrc_uploader;       // lyrics uploader name
+    QString translrc_uploader;  // translated lyrics uploader name
 
     QImage cover;
 

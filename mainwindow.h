@@ -64,6 +64,10 @@ private:
     QLineEdit *info_artist_edit;
     QLabel *info_album_label;
     QLineEdit *info_album_edit;
+    QLabel *info_lrc_uploader_label;
+    QLineEdit *info_lrc_uploader_edit;
+    QLabel *info_translrc_uploader_label;
+    QLineEdit *info_translrc_uploader_edit;
     ImageCanvas *info_cover_image;
     QPushButton *info_cover_save_button;
 
