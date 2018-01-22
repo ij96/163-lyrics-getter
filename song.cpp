@@ -138,6 +138,8 @@ void Song::get_info_lyrics() {
         album = "";
         lrc.set("");
         translrc.set("");
+        lrc_uploader = "";
+        translrc_uploader = "";
         cover = QPixmap(0,0).toImage();
     } else {
         get_info();

@@ -92,9 +92,10 @@ QString Lyrics::order_tags() {
     // determine suitable number of decimal places for fractional seconds
     int decimal_places = 2;
     foreach(const QTime &time, _time_map.keys()) {
-        if(time.toString("zzz")[2] != "0")
+        if(time.toString("zzz")[2] != "0") {
             decimal_places = 3;
             break;
+        }
     }
 
     // output LRC
