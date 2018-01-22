@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
         qApp->installTranslator(translator);
 
     //---version---
-    app_version = "v1.0.2";
+    app_version = "v1.0.3";
 
     //------UI------
     //---menu bar---

@@ -6,4 +6,4 @@
 
 ## 截屏 | Screenshot
 
-![163-lyrics-getter-screenshot-v1 0 2](https://user-images.githubusercontent.com/25159698/34471847-245f17e6-ef4b-11e7-85d4-4fef381371d4.png)
+![163-lyrics-getter-screenshot-v1 0 3](https://user-images.githubusercontent.com/25159698/35242622-f12aab5c-ffb1-11e7-9ed7-b24e8e82761e.png)
