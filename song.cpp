@@ -150,13 +150,12 @@ bool Song::submit_translrc() {
 }
 
 void Song::set_id(QString buf) {
-    QRegExp rx("(?:[&?/]id=|^)([0-9]+)");
-    rx.indexIn(buf);
-    buf = rx.capturedTexts()[1];
-    if(buf.isEmpty())
-        _id = 0;
+    QRegularExpression re("(?:[&?/]id=|^)([0-9]+)");
+    QRegularExpressionMatch match = re.match(buf);
+    if(match.hasMatch())
+        _id = match.captured(1).toDouble();
     else
-        _id = buf.toDouble();
+        _id = 0;
 }
 
 int Song::id() {

@@ -181,9 +181,10 @@ void MainWindow::get_info_lyrics() {
     status_edit->setText(tr("Getting song information and lyrics..."));
 
     song->set_id(input_id_edit->text());
+    input_id_edit->setText(QString::number(song->id()));
+
     song->get_info_lyrics();
 
-    input_id_edit->setText(QString::number(song->id()));
     info_title_edit->setText(song->title);
     info_artist_edit->setText(song->artist);
     info_album_edit->setText(song->album);

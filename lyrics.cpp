@@ -78,13 +78,13 @@ QString Lyrics::show(bool show_tags, bool ordered) {
 }
 
 QString Lyrics::remove_tags(QString lrc_raw) {
-    QRegExp rx_lrc_tags("\\[[^\\]]*\\]");
-    QRegExp rx_multiple_blank_rows("\\n\\n[\\n]+");
-    QRegExp rx_opening_blank_rows("^[\\n]+");
+    QRegularExpression re_lrc_tags("\\[[^\\]]*\\]");
+    QRegularExpression re_multiple_blank_rows("\\n\\n[\\n]+");
+    QRegularExpression re_opening_blank_rows("^[\\n]+");
     QString lrc_no_tags = lrc_raw;
-    lrc_no_tags = lrc_no_tags.replace(rx_lrc_tags,"");
-    lrc_no_tags = lrc_no_tags.replace(rx_multiple_blank_rows,"\n\n");
-    lrc_no_tags = lrc_no_tags.replace(rx_opening_blank_rows,"");
+    lrc_no_tags = lrc_no_tags.replace(re_lrc_tags,"");
+    lrc_no_tags = lrc_no_tags.replace(re_multiple_blank_rows,"\n\n");
+    lrc_no_tags = lrc_no_tags.replace(re_opening_blank_rows,"");
     return lrc_no_tags;
 }
 
