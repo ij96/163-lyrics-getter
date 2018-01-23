@@ -6,15 +6,11 @@
 #include "lyrics.h"
 
 //status code
-#define SONG_STATUS_HAS_LRC_TRANSLRC    0
-#define SONG_STATUS_NOT_EXIST           1
-#define SONG_STATUS_NO_LRC              2
-#define SONG_STATUS_NO_TRANSLRC         3
-#define SONG_STATUS_INSTRUMENTAL        4
-//#define SONG_STATUS_EXIST         0x01
-//#define SONG_STATUS_LRC           0x02
-//#define SONG_STATUS_TRANSLRC      0x04
-//#define SONG_STATUS_INSTRUMENTAL  0x08
+#define SONG_STATUS_DEFAULT       0x00 // default - song does not exist
+#define SONG_STATUS_EXIST         0x01 // song exists
+#define SONG_STATUS_LRC           0x02 // has lyrics
+#define SONG_STATUS_TRANSLRC      0x04 // has translation
+#define SONG_STATUS_INSTRUMENTAL  0x08 // instrumental - no lyrics should exist
 
 class Song : public QObject {
     Q_OBJECT
@@ -36,7 +32,7 @@ public:
     QJsonObject song_info_json_obj;
     QJsonObject song_lyrics_json_obj;
 
-    qint8 status_code = SONG_STATUS_NOT_EXIST;
+    qint8 status_code = SONG_STATUS_DEFAULT;
 
     void get_all();
 

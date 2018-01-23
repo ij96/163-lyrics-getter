@@ -118,25 +118,26 @@ void Song::parse_lyrics() {
 }
 
 void Song::check_status() {
-    status_code = 0; // clear
+    status_code = SONG_STATUS_DEFAULT; // clear
     // check if song exists, by counting items in "songs" array: if 0, then song does not exist
-    if (song_info_json_obj.value("songs").toArray().size() == 0) {
-        status_code = SONG_STATUS_NOT_EXIST;
-    } else {
+    if (song_info_json_obj.value("songs").toArray().size() != 0) {
+        status_code |= SONG_STATUS_EXIST;
         if (song_lyrics_json_obj.value("nolyric").toBool() == true) {
-            status_code = SONG_STATUS_INSTRUMENTAL; // instrumental - no lyrics should exist
-        } else if (song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() == "") {
-            status_code = SONG_STATUS_NO_LRC;       // lyrics not found
-        } else if (song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() == "") {
-            status_code = SONG_STATUS_NO_TRANSLRC;  // lyrics found, but translated lyrics not found
-        } else {
-            status_code = SONG_STATUS_HAS_LRC_TRANSLRC;
+            status_code |= SONG_STATUS_INSTRUMENTAL;
+        }
+        if (song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() != "") {
+            status_code |= SONG_STATUS_LRC;
+        }
+        if (song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() != "") {
+            status_code |= SONG_STATUS_TRANSLRC;
         }
     }
+    qDebug() << status_code;
 }
 
 void Song::get_all() {
-    if (!_id_changed) return;
+    if (!_id_changed) return; // skip all if ID has not changed
+
     QEventLoop event_loop;
     QObject::connect(this, SIGNAL(done()), &event_loop, SLOT(quit()));
     get("info", QUrl(QString("http://music.163.com/api/song/detail?ids=[%1]")
@@ -147,7 +148,7 @@ void Song::get_all() {
     event_loop.exec(); // wait for current requests to finish
 
     check_status();
-    if (status_code == SONG_STATUS_NOT_EXIST) {
+    if (!status_code & SONG_STATUS_EXIST) {
         clear();
     } else {
         parse_info();

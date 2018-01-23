@@ -217,7 +217,7 @@ void MainWindow::quit() {
 bool MainWindow::save(bool save_translated) {
     bool no_tags = hide_tags_button->isChecked();
     QString default_file_name = "*";
-    if (song->status_code != SONG_STATUS_NOT_EXIST) {
+    if (song->status_code & SONG_STATUS_EXIST) {
         default_file_name = QString("%1 - %2%3.%4")
                                     .arg(song->title, song->artist,
                                          save_translated?tr(" (translated)"):"",
@@ -271,7 +271,7 @@ bool MainWindow::submit_translrc() {
 
 bool MainWindow::save_info_cover() {
     QString default_file_name = "*";
-    if (song->status_code != SONG_STATUS_NOT_EXIST) {
+    if (song->status_code & SONG_STATUS_EXIST) {
         default_file_name = QString("%1 - cover").arg(song->album);
     }
     QString file_name = QFileDialog::getSaveFileName(this,
@@ -300,22 +300,17 @@ void MainWindow::about() {
 
 void MainWindow::display_song_status() {
     QString msg;
-    switch(song->status_code) {
-        case SONG_STATUS_HAS_LRC_TRANSLRC :
-            msg = tr("All found.");
-            break;
-        case SONG_STATUS_NOT_EXIST :
-            msg = tr("Song does not exist.");
-            break;
-        case SONG_STATUS_NO_LRC :
-            msg = tr("Lyrics do not exist.");
-            break;
-        case SONG_STATUS_NO_TRANSLRC :
-            msg = tr("Lyrics found, but translated lyrics not found.");
-            break;
-        case SONG_STATUS_INSTRUMENTAL :
-            msg = tr("Song is instrumental - no lyrics should exist.");
-            break;
+    int status = song->status_code;
+    if (!(status & SONG_STATUS_EXIST)) {
+        msg = tr("Song does not exist.");
+    } else if (status & SONG_STATUS_INSTRUMENTAL) {
+        msg = tr("Song is instrumental - no lyrics should exist.");
+    } else if (!(status & SONG_STATUS_LRC)) {
+        msg = tr("Lyrics do not exist.");
+    } else if (!(status & SONG_STATUS_TRANSLRC)) {
+        msg = tr("Lyrics found, but translated lyrics not found.");
+    } else {
+        msg = tr("All found.");
     }
     status_edit->setText(msg);
 }
