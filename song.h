@@ -1,15 +1,8 @@
 #ifndef SONG_H
 #define SONG_H
 
-#include <QApplication>
-#include <QWidget>
+#include <QtWidgets>
 #include <QtNetwork>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
-#include <QJsonParseError>
-#include <QDesktopServices>
 #include "lyrics.h"
 
 //status code
@@ -18,10 +11,16 @@
 #define SONG_STATUS_NO_LRC              2
 #define SONG_STATUS_NO_TRANSLRC         3
 #define SONG_STATUS_INSTRUMENTAL        4
+//#define SONG_STATUS_EXIST         0x01
+//#define SONG_STATUS_LRC           0x02
+//#define SONG_STATUS_TRANSLRC      0x04
+//#define SONG_STATUS_INSTRUMENTAL  0x08
 
-class Song{
+class Song : public QObject {
+    Q_OBJECT
+
 public:
-    Song();
+    explicit Song(QObject *parent = 0);
     ~Song();
 
     QString title;
@@ -31,7 +30,7 @@ public:
     Lyrics translrc;            // translated lyrics
     QString lrc_uploader;       // lyrics uploader name
     QString translrc_uploader;  // translated lyrics uploader name
-
+    QUrl cover_url;
     QImage cover;
 
     QJsonObject song_info_json_obj;
@@ -39,25 +38,42 @@ public:
 
     qint8 status_code = SONG_STATUS_NOT_EXIST;
 
-    bool get_info_json();
-    bool get_lyrics_json();
+    void get_all();
 
-    QImage get_cover(const QString &url);
-    void get_info();
-    void get_lyrics();
-    void get_info_lyrics();
-
-    void check_status();
     bool submit_lrc();
     bool submit_translrc();
 
     void set_id(QString buf);
     int id();
 
-    void translrc_insert_blanks();
+signals:
+    void done();
+
+private slots:
+    void finished(QNetworkReply *reply);
 
 private:
-    qint32 _id = 0;
+    qint32 _id = -1;
+    qint32 _id_prev = -1;
+    bool _id_changed = false;
+
+    QNetworkAccessManager nam;
+    QList<QString> requests; // running requests
+
+    void get(const QString &type, const QUrl &url);
+
+    void download_info_json(const QString &response_data);
+    void download_lyrics_json(const QString &response_data);
+    void download_cover(const QByteArray &response_data);
+
+    void parse_info();
+    void parse_lyrics();
+
+    void translrc_insert_blanks();
+
+    void check_status();
+
+    void clear();
 };
 
 #endif // SONG_H
