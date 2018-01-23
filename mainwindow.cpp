@@ -217,7 +217,7 @@ void MainWindow::quit() {
 bool MainWindow::save(bool save_translated) {
     bool no_tags = hide_tags_button->isChecked();
     QString default_file_name = "*";
-    if (song->status_code & SONG_STATUS_EXIST) {
+    if (song->status() & SONG_STATUS_EXIST) {
         default_file_name = QString("%1 - %2%3.%4")
                                     .arg(song->title, song->artist,
                                          save_translated?tr(" (translated)"):"",
@@ -271,7 +271,7 @@ bool MainWindow::submit_translrc() {
 
 bool MainWindow::save_info_cover() {
     QString default_file_name = "*";
-    if (song->status_code & SONG_STATUS_EXIST) {
+    if (song->status() & SONG_STATUS_EXIST) {
         default_file_name = QString("%1 - cover").arg(song->album);
     }
     QString file_name = QFileDialog::getSaveFileName(this,
@@ -300,17 +300,25 @@ void MainWindow::about() {
 
 void MainWindow::display_song_status() {
     QString msg;
-    int status = song->status_code;
+    int status = song->status();
     if (!(status & SONG_STATUS_EXIST)) {
         msg = tr("Song does not exist.");
-    } else if (status & SONG_STATUS_INSTRUMENTAL) {
-        msg = tr("Song is instrumental - no lyrics should exist.");
-    } else if (!(status & SONG_STATUS_LRC)) {
-        msg = tr("Lyrics do not exist.");
-    } else if (!(status & SONG_STATUS_TRANSLRC)) {
-        msg = tr("Lyrics found, but translated lyrics not found.");
     } else {
-        msg = tr("All found.");
+        if (status & SONG_STATUS_INSTRUMENTAL) {
+            msg = tr("Song is instrumental - no lyrics should exist.");
+        } else if (!(status & SONG_STATUS_LRC)) {
+            msg = tr("Lyrics do not exist.");
+        } else if (!(status & SONG_STATUS_TRANSLRC)) {
+            msg = tr("Lyrics found, but translated lyrics not found.");
+        } else {
+            msg = tr("All found.");
+        }
+        if (status & SONG_STATUS_LRC_UPLOADED) {
+            msg += tr(" Lyrics has been uploaded.");
+        }
+        if (status & SONG_STATUS_TRANSLRC_UPLOADED) {
+            msg += tr(" Translation has been uploaded.");
+        }
     }
     status_edit->setText(msg);
 }

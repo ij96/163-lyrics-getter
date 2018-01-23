@@ -11,34 +11,25 @@ void Song::finished(QNetworkReply *reply) {
         QString type = reply->property("type").toString();
         if (type == "info") {
             QString response_data = reply->readAll();
-            //download_info_json(response_data);
-            QJsonDocument json_response = QJsonDocument::fromJson(response_data.toUtf8());
-            song_info_json_obj = json_response.object();
+            song_info_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
         } else if (type == "lyrics") {
             QString response_data = reply->readAll();
-            //download_lyrics_json(response_data);
-            QJsonDocument json_response = QJsonDocument::fromJson(response_data.toUtf8());
-            song_lyrics_json_obj = json_response.object();
+            song_lyrics_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
         } else if (type == "cover") {
             QByteArray response_data = reply->readAll();
-            //download_cover(response_data);
             if (cover_url.isEmpty()) {
                 cover = QImage();
             } else {
                 cover = QImage::fromData(response_data);
             }
-        } else if (type == "lrc_uploaded") {
+        } else if (type == "lrc_upload") {
             QString response_data = reply->readAll();
-            qDebug() << response_data;
-            if (response_data.indexOf("n-lytips") != -1) {
-                qDebug() << "lyrics uploaded";
-            }
-        } else if (type == "translrc_uploaded") {
+            song_lrc_upload_html = response_data;
+            //qDebug() << song_lrc_upload_html;
+            //qDebug() << "response length:" << song_lrc_upload_html.length();
+        } else if (type == "translrc_upload") {
             QString response_data = reply->readAll();
-            qDebug() << response_data;
-            if (response_data.indexOf("n-lytips") != -1) {
-                qDebug() << "translation uploaded";
-            }
+            song_translrc_upload_html = response_data;
         }
         requests.removeOne(reply->property("type").toString());
         if (requests.isEmpty()) {
@@ -55,24 +46,6 @@ void Song::get(const QString &type, const QUrl &url) {
     QNetworkReply *reply = nam.get(QNetworkRequest(url));
     reply->setProperty("type", type);
     requests.append(type);
-}
-
-void Song::download_info_json(const QString &response_data) {
-    QJsonDocument json_response = QJsonDocument::fromJson(response_data.toUtf8());
-    song_info_json_obj = json_response.object();
-}
-
-void Song::download_lyrics_json(const QString &response_data) {
-    QJsonDocument json_response = QJsonDocument::fromJson(response_data.toUtf8());
-    song_lyrics_json_obj = json_response.object();
-}
-
-void Song::download_cover(const QByteArray &response_data) {
-    if (cover_url.isEmpty()) {
-        cover = QImage();
-    } else {
-        cover = QImage::fromData(response_data);
-    }
 }
 
 void Song::parse_info() {
@@ -118,25 +91,30 @@ void Song::parse_lyrics() {
 }
 
 void Song::check_status() {
-    status_code = SONG_STATUS_DEFAULT; // clear
+    _status = SONG_STATUS_DEFAULT; // clear
     // check if song exists, by counting items in "songs" array: if 0, then song does not exist
     if (song_info_json_obj.value("songs").toArray().size() != 0) {
-        status_code |= SONG_STATUS_EXIST;
+        _status |= SONG_STATUS_EXIST;
         if (song_lyrics_json_obj.value("nolyric").toBool() == true) {
-            status_code |= SONG_STATUS_INSTRUMENTAL;
+            _status |= SONG_STATUS_INSTRUMENTAL;
         }
         if (song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() != "") {
-            status_code |= SONG_STATUS_LRC;
+            _status |= SONG_STATUS_LRC;
         }
         if (song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() != "") {
-            status_code |= SONG_STATUS_TRANSLRC;
+            _status |= SONG_STATUS_TRANSLRC;
+        }
+        if (song_lrc_upload_html.indexOf("n-lytips") != -1) {
+            _status |= SONG_STATUS_LRC_UPLOADED;
+        }
+        if (song_translrc_upload_html.indexOf("n-lytips") != -1) {
+            _status |= SONG_STATUS_TRANSLRC_UPLOADED;
         }
     }
-    qDebug() << status_code;
 }
 
 void Song::get_all() {
-    if (!_id_changed) return; // skip all if ID has not changed
+    if (!id_changed) return; // skip all if ID has not changed
 
     QEventLoop event_loop;
     QObject::connect(this, SIGNAL(done()), &event_loop, SLOT(quit()));
@@ -148,17 +126,18 @@ void Song::get_all() {
     event_loop.exec(); // wait for current requests to finish
 
     check_status();
-    if (!status_code & SONG_STATUS_EXIST) {
+    if (!(_status & SONG_STATUS_EXIST)) {
         clear();
     } else {
         parse_info();
         parse_lyrics();
         get("cover", cover_url);
-        get("lrc_uploaded", QUrl(QString("http://music.163.com/lyric/up?id=%1")
-                                 .arg(QString::number(_id))));
-        get("translrc_uploaded", QUrl(QString("http://music.163.com/lyric/translrc?id=%1")
-                                      .arg(QString::number(_id))));
+        get("lrc_upload", QUrl(QString("http://music.163.com/lyric/up?id=%1")
+                               .arg(QString::number(_id))));
+        get("translrc_upload", QUrl(QString("http://music.163.com/lyric/translrc?id=%1")
+                                    .arg(QString::number(_id))));
         event_loop.exec(); // wait for current requests to finish
+        check_status();
     }
 }
 
@@ -193,14 +172,18 @@ void Song::set_id(QString buf) {
         _id = 0;
     }
     if (_id == _id_prev) {
-        _id_changed = false;
+        id_changed = false;
     } else {
-        _id_changed = true;
+        id_changed = true;
     }
 }
 
-int Song::id() {
+qint32 Song::id() {
     return _id;
+}
+
+qint8 Song::status() {
+    return _status;
 }
 
 void Song::translrc_insert_blanks() {

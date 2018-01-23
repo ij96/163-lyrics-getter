@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QtWidgets>
-#include <QString>
-#include <QShortcut>
-#include <QTranslator>
+//#include <QString>
+//#include <QShortcut>
+//#include <QTranslator>
 #include "image.h"
 #include "song.h"
 #include "togglebutton.h"

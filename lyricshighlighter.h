@@ -3,8 +3,7 @@
 
 #include <QtGui>
 
-class LyricsHighlighter : public QSyntaxHighlighter
-{
+class LyricsHighlighter : public QSyntaxHighlighter {
 public:
     explicit LyricsHighlighter(QTextDocument *parent);
 
