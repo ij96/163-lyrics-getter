@@ -23,6 +23,7 @@ private:
     QString _data = "";
     QStringList _meta_list;
     QMap<QTime, QString> _time_map;
+    bool is_lrc = false;
 
     QString remove_tags(QString lrc_raw);
     QString order_tags();

@@ -24,6 +24,11 @@ void Lyrics::update_tag_maps() {
     _time_map.clear();
     _meta_list.clear();
 
+    if(_data.isEmpty()) {
+        is_lrc = true;
+        return;
+    }
+
     // extract time and meta tags
     QStringList lines = _data.split("\n");
     for (int i = 0; i < lines.length(); i++) {
@@ -35,8 +40,10 @@ void Lyrics::update_tag_maps() {
             QString tag = tag_match_iter.next().captured();
             tags << tag;
         }
+
         QRegularExpression all_tags_re("^\\[.*\\]");
         QString content = lines[i].replace(all_tags_re, "");
+
         for (int i = 0; i < tags.length(); i++) {
             QStringList time_patterns;
             bool valid_time = false;
@@ -57,7 +64,11 @@ void Lyrics::update_tag_maps() {
             else _meta_list << tags[i];
         }
     }
-    //_meta_list.sort(); // order meta tags by alphabet
+    if (_meta_list.isEmpty() && _time_map.isEmpty()) {
+        is_lrc = false;
+    } else {
+        is_lrc = true;
+    }
 }
 
 void Lyrics::time_map_insert(QTime key, QString value) {
@@ -66,8 +77,12 @@ void Lyrics::time_map_insert(QTime key, QString value) {
 
 QString Lyrics::show(bool show_tags, bool ordered) {
     QString lrc_shown = _data;
-    if (ordered) lrc_shown = order_tags();
-    if (!show_tags) lrc_shown = remove_tags(lrc_shown);
+    if (is_lrc) {
+        if (ordered) lrc_shown = order_tags();
+        if (!show_tags) lrc_shown = remove_tags(lrc_shown);
+    } else {
+        if (show_tags) lrc_shown = QString("[unsynchronised]\n%1").arg(lrc_shown);
+    }
     return lrc_shown;
 }
 
