@@ -19,8 +19,8 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
 
     i = expression.globalMatch(text);
     while (i.hasNext()) {
-      QRegularExpressionMatch match = i.next();
-      setFormat(match.capturedStart(), match.capturedLength(), time_format);
+        QRegularExpressionMatch match = i.next();
+        setFormat(match.capturedStart(), match.capturedLength(), time_format);
     }
 
     // Meta tags
@@ -40,9 +40,9 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
     expression.setPattern("^\\[[^\\]:]*[^0-9\\]:]+[^\\]:]*:([^\\]]*)\\]");
     i = expression.globalMatch(text);
     while (i.hasNext()) {
-      QRegularExpressionMatch match = i.next();
-      setFormat(match.capturedStart(0), match.capturedLength(0), meta_tag_format);
-      setFormat(match.capturedStart(1), match.capturedLength(1), meta_info_format);
+        QRegularExpressionMatch match = i.next();
+        setFormat(match.capturedStart(0), match.capturedLength(0), meta_tag_format);
+        setFormat(match.capturedStart(1), match.capturedLength(1), meta_info_format);
     }
 
     // Unknown tags
@@ -53,12 +53,14 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
     unknown_format.setForeground(Qt::gray);
     unknown_format.setFontWeight(QFont::Normal);
 
-    expression.setPattern("(?:\\][^[]+)(?=((?:\\[[^\\[]+\\])+))|(\\[[^:]*\\]|\\[[0-9]+:[^\\]:]*[^0-9.:\\]]+[^\\]:]*\\])");
+    expression.setPattern("(?:\\][^[]+)"
+                          "(?=((?:\\[[^\\[]+\\])+))"
+                          "|(\\[[^:]*\\]|\\[[0-9]+:[^\\]:]*[^0-9.:\\]]+[^\\]:]*\\])");
     i = expression.globalMatch(text);
     while (i.hasNext()) {
-      QRegularExpressionMatch match = i.next();
-      setFormat(match.capturedStart(1), match.capturedLength(1), unknown_format);
-      setFormat(match.capturedStart(2), match.capturedLength(2), unknown_format);
+        QRegularExpressionMatch match = i.next();
+        setFormat(match.capturedStart(1), match.capturedLength(1), unknown_format);
+        setFormat(match.capturedStart(2), match.capturedLength(2), unknown_format);
     }
 
     // Lyrics text
@@ -72,7 +74,7 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
     expression.setPattern("(?:^|\\])([^[\\]]+)(?:$|\\[)");
     i = expression.globalMatch(text);
     while (i.hasNext()) {
-      QRegularExpressionMatch match = i.next();
-      setFormat(match.capturedStart(1), match.capturedLength(1), text_format);
+        QRegularExpressionMatch match = i.next();
+        setFormat(match.capturedStart(1), match.capturedLength(1), text_format);
     }
 }

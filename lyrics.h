@@ -14,7 +14,7 @@ public:
 
     QStringList meta_map();
 
-    QMap<QTime,QString> time_map();
+    QMap<QTime, QString> time_map();
     void time_map_insert(QTime key, QString value);
 
     QString show(bool show_tags = true, bool ordered = false);
@@ -22,7 +22,7 @@ public:
 private:
     QString _data = "";
     QStringList _meta_list;
-    QMap<QTime,QString> _time_map;
+    QMap<QTime, QString> _time_map;
 
     QString remove_tags(QString lrc_raw);
     QString order_tags();

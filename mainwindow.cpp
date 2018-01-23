@@ -18,10 +18,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_album_label = new QLabel();
     info_album_edit = new QLineEdit();
     info_lrc_uploader_label = new QLabel();
-    //info_lrc_uploader_label->setWordWrap(true);
     info_lrc_uploader_edit = new QLineEdit();
     info_translrc_uploader_label = new QLabel();
-    //info_translrc_uploader_label->setWordWrap(true);
     info_translrc_uploader_edit = new QLineEdit();
     info_cover_image = new ImageCanvas();
     info_cover_save_button = new QPushButton();
@@ -59,13 +57,14 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     //------END initialisation------
 
     //---settings file---
-    settings_file_path = QApplication::applicationDirPath() + "/config.ini";
+    settings_file_path = QString("%1/config.ini").arg(QApplication::applicationDirPath());
     setup_settings_file();  // create settings file, if it does not exist
     load_settings();        // load from settings
 
     //---translator---
-    if(translator->load(QString(":/language/%1.qm").arg(locale->name())))
+    if (translator->load(QString(":/language/%1.qm").arg(locale->name()))) {
         qApp->installTranslator(translator);
+    }
 
     //---version---
     app_version = "v1.0.3";
@@ -104,34 +103,34 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     //---layouts---
     // 1st
     QGridLayout *toolbar_layout = new QGridLayout();
-    toolbar_layout->addWidget(input_id_label,           0,0);       // input
-    toolbar_layout->addWidget(input_id_edit,            0,1);
-    toolbar_layout->addWidget(input_button,             0,2);
+    toolbar_layout->addWidget(input_id_label,           0, 0);       // input
+    toolbar_layout->addWidget(input_id_edit,            0, 1);
+    toolbar_layout->addWidget(input_button,             0, 2);
 
-    toolbar_layout->addWidget(status_label,             1,0);       // status
-    toolbar_layout->addWidget(status_edit,              1,1,1,2);
+    toolbar_layout->addWidget(status_label,             1, 0);       // status
+    toolbar_layout->addWidget(status_edit,              1, 1, 1, 2);
 
-    toolbar_layout->addWidget(hide_tags_button,         2,0,1,2);   // hide LRC tags
-    toolbar_layout->addWidget(order_tags_button,        2,2);       // order LRC tags
+    toolbar_layout->addWidget(hide_tags_button,         2, 0, 1, 2); // hide LRC tags
+    toolbar_layout->addWidget(order_tags_button,        2, 2);       // order LRC tags
 
-    toolbar_layout->addWidget(info_title_label,         3,0);       // title
-    toolbar_layout->addWidget(info_title_edit,          3,1,1,2);
+    toolbar_layout->addWidget(info_title_label,         3, 0);       // title
+    toolbar_layout->addWidget(info_title_edit,          3, 1, 1, 2);
 
-    toolbar_layout->addWidget(info_artist_label,        4,0);       // artist
-    toolbar_layout->addWidget(info_artist_edit,         4,1,1,2);
+    toolbar_layout->addWidget(info_artist_label,        4, 0);       // artist
+    toolbar_layout->addWidget(info_artist_edit,         4, 1, 1, 2);
 
-    toolbar_layout->addWidget(info_album_label,         5,0);       // album
-    toolbar_layout->addWidget(info_album_edit,          5,1,1,2);
+    toolbar_layout->addWidget(info_album_label,         5, 0);       // album
+    toolbar_layout->addWidget(info_album_edit,          5, 1, 1, 2);
 
-    toolbar_layout->addWidget(info_lrc_uploader_label,  6,0);       // lyrics uploader
-    toolbar_layout->addWidget(info_lrc_uploader_edit,   6,1,1,2);
+    toolbar_layout->addWidget(info_lrc_uploader_label,  6, 0);       // lyrics uploader
+    toolbar_layout->addWidget(info_lrc_uploader_edit,   6, 1, 1, 2);
 
-    toolbar_layout->addWidget(info_translrc_uploader_label,  7,0);  // translation uploader
-    toolbar_layout->addWidget(info_translrc_uploader_edit,   7,1,1,2);
+    toolbar_layout->addWidget(info_translrc_uploader_label, 7, 0);   // translation uploader
+    toolbar_layout->addWidget(info_translrc_uploader_edit,  7, 1, 1, 2);
 
-    toolbar_layout->addWidget(info_cover_image,         8,0,1,3);   // cover
+    toolbar_layout->addWidget(info_cover_image,         8, 0, 1, 3); // cover
 
-    toolbar_layout->addWidget(info_cover_save_button,   9,0,1,3);
+    toolbar_layout->addWidget(info_cover_save_button,   9, 0, 1, 3);
 
     QVBoxLayout *lrc_layout = new QVBoxLayout();
     lrc_layout->addWidget(lrc_label);
@@ -147,41 +146,41 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     // 0th
     QGridLayout *main_layout = new QGridLayout(this);
-    main_layout->addLayout(toolbar_layout, 0,0);
-    main_layout->addLayout(lrc_layout,     0,1);
-    main_layout->addLayout(translrc_layout,0,2);
+    main_layout->addLayout(toolbar_layout, 0, 0);
+    main_layout->addLayout(lrc_layout,     0, 1);
+    main_layout->addLayout(translrc_layout, 0, 2);
 
-    main_layout->setColumnStretch(0,3);
-    main_layout->setColumnStretch(1,4);
-    main_layout->setColumnStretch(2,4);
+    main_layout->setColumnStretch(0, 3);
+    main_layout->setColumnStretch(1, 4);
+    main_layout->setColumnStretch(2, 4);
 
     main_layout->setMenuBar(menu_bar);
 
     setLayout(main_layout);
-    resize(840,600);
+    resize(840, 600);
     setWindowTitle(app_name);
     //---END layouts---
     //------END UI------
 
     //---connect---
-    connect(input_id_edit,&QLineEdit::returnPressed,input_button,&QPushButton::click);
+    connect(input_id_edit, &QLineEdit::returnPressed, input_button, &QPushButton::click);
 
-    connect(input_button,SIGNAL(clicked()),this,SLOT(get_info_lyrics()));
-    connect(lrc_save_button,SIGNAL(clicked()),this,SLOT(save_lrc()));
-    connect(lrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_lrc()));
-    connect(translrc_save_button,SIGNAL(clicked()),this,SLOT(save_translrc()));
-    connect(translrc_submit_button,SIGNAL(clicked()),this,SLOT(submit_translrc()));
-    connect(info_cover_save_button,SIGNAL(clicked()),this,SLOT(save_info_cover()));
-    connect(hide_tags_button,SIGNAL(toggled()),this,SLOT(show_or_hide_tags()));
-    connect(order_tags_button,SIGNAL(toggled()),this,SLOT(order_or_unorder_tags()));
+    connect(input_button, SIGNAL(clicked()), this, SLOT(get_info_lyrics()));
+    connect(lrc_save_button, SIGNAL(clicked()), this, SLOT(save_lrc()));
+    connect(lrc_submit_button, SIGNAL(clicked()), this, SLOT(submit_lrc()));
+    connect(translrc_save_button, SIGNAL(clicked()), this, SLOT(save_translrc()));
+    connect(translrc_submit_button, SIGNAL(clicked()), this, SLOT(submit_translrc()));
+    connect(info_cover_save_button, SIGNAL(clicked()), this, SLOT(save_info_cover()));
+    connect(hide_tags_button, SIGNAL(toggled()), this, SLOT(show_or_hide_tags()));
+    connect(order_tags_button, SIGNAL(toggled()), this, SLOT(order_or_unorder_tags()));
 
-    connect(save_lrc_action,SIGNAL(triggered()),this,SLOT(save_lrc()));
-    connect(save_translrc_action,SIGNAL(triggered()),this,SLOT(save_translrc()));
-    connect(save_info_cover_action,SIGNAL(triggered()),this,SLOT(save_info_cover()));
-    connect(quit_action,SIGNAL(triggered()),this,SLOT(quit()));
-    connect(about_action,SIGNAL(triggered()),this,SLOT(about()));
+    connect(save_lrc_action, SIGNAL(triggered()), this, SLOT(save_lrc()));
+    connect(save_translrc_action, SIGNAL(triggered()), this, SLOT(save_translrc()));
+    connect(save_info_cover_action, SIGNAL(triggered()), this, SLOT(save_info_cover()));
+    connect(quit_action, SIGNAL(triggered()), this, SLOT(quit()));
+    connect(about_action, SIGNAL(triggered()), this, SLOT(about()));
 
-    connect(language_menu,SIGNAL(triggered(QAction*)),this,SLOT(set_language(QAction*)));
+    connect(language_menu, SIGNAL(triggered(QAction*)), this, SLOT(set_language(QAction*)));
     //---END connect---
 
     retranslate_ui();
@@ -195,7 +194,7 @@ void MainWindow::get_info_lyrics() {
     song->set_id(input_id_edit->text());
     input_id_edit->setText(QString::number(song->id()));
 
-    song->get_info_lyrics();
+    song->get_all();
 
     info_title_edit->setText(song->title);
     info_artist_edit->setText(song->artist);
@@ -203,7 +202,8 @@ void MainWindow::get_info_lyrics() {
     info_lrc_uploader_edit->setText(song->lrc_uploader);
     info_translrc_uploader_edit->setText(song->translrc_uploader);
     info_cover_image->setPixmap(QPixmap::fromImage(song->cover));
-    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1").arg(song->album));
+    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1")
+                                                        .arg(song->album));
 
     display_lrc_translrc();
 
@@ -217,24 +217,25 @@ void MainWindow::quit() {
 bool MainWindow::save(bool save_translated) {
     bool no_tags = hide_tags_button->isChecked();
     QString default_file_name = "*";
-    if(song->status_code != SONG_STATUS_NOT_EXIST)
-        default_file_name = QString("%1 - %2%3.%4").arg(song->title,song->artist,
-                                                        save_translated?tr(" (translated)"):"",
-                                                        no_tags?"txt":"lrc");
+    if (song->status_code != SONG_STATUS_NOT_EXIST) {
+        default_file_name = QString("%1 - %2%3.%4")
+                                    .arg(song->title, song->artist,
+                                         save_translated?tr(" (translated)"):"",
+                                         no_tags?"txt":"lrc");
+    }
     QString file_name;
     QString filter_txt = tr("Text file (*.txt)");
     QString filter_lrc = tr("LRC lyrics file (*.lrc)");
-    QString filters = QString("%1;;%2").arg(filter_txt,filter_lrc);
+    QString filters = QString("%1;;%2").arg(filter_txt, filter_lrc);
     file_name = QFileDialog::getSaveFileName(this,
                                              tr("Save As"),
                                              default_file_name,
-                                             filters,no_tags?&filter_txt:&filter_lrc);
+                                             filters, no_tags?&filter_txt:&filter_lrc);
 
-    if(file_name.isEmpty())
-        return false;
+    if (file_name.isEmpty()) return false;
 
     QFile file(file_name);
-    if(!file.open(QFile::WriteOnly | QFile::Text)) {
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, tr("Application"),
             tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(file_name),
                                                  file.errorString()));
@@ -243,10 +244,8 @@ bool MainWindow::save(bool save_translated) {
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
-    if(save_translated)
-        out << translrc_text->toPlainText();
-    else
-        out << lrc_text->toPlainText();
+    if (save_translated) out << translrc_text->toPlainText();
+    else out << lrc_text->toPlainText();
     out.setGenerateByteOrderMark(true);
     out.flush();
 
@@ -272,15 +271,17 @@ bool MainWindow::submit_translrc() {
 
 bool MainWindow::save_info_cover() {
     QString default_file_name = "*";
-    if(song->status_code != SONG_STATUS_NOT_EXIST) {
-        default_file_name = song->album + " - cover";
+    if (song->status_code != SONG_STATUS_NOT_EXIST) {
+        default_file_name = QString("%1 - cover").arg(song->album);
     }
-    QString file_name = QFileDialog::getSaveFileName(this,tr("Save As"),default_file_name,tr("Images (*.jpg *.png)"));
+    QString file_name = QFileDialog::getSaveFileName(this,
+                                                     tr("Save As"),
+                                                     default_file_name,
+                                                     tr("Images (*.jpg *.png)"));
 
-    if(file_name.isEmpty())
-        return false;
+    if (file_name.isEmpty()) return false;
 
-    if(song->cover.save(file_name)) {
+    if (song->cover.save(file_name)) {
         qDebug() << "Successfully saved album cover to " << file_name;
         return true;
     } else {
@@ -290,11 +291,11 @@ bool MainWindow::save_info_cover() {
 }
 
 void MainWindow::about() {
-    QMessageBox::about(this, tr("About") + app_name,
-        tr("Get lyrics from NetEase Cloud Music (<a href=\"http://music.163.com\">music.163.com</a>)<br/>"
-            "Author: ij96<br/>"
-            "<a href=\"http://github.com/ij96/163-lyrics-getter\">GitHub page</a>"
-            ));
+    QMessageBox::about(this, tr("About %1").arg(app_name),
+        tr("Get lyrics from NetEase Cloud Music "
+           "(<a href=\"http://music.163.com\">music.163.com</a>)<br/>"
+           "Author: ij96<br/>"
+           "<a href=\"http://github.com/ij96/163-lyrics-getter\">GitHub page</a>"));
 }
 
 void MainWindow::display_song_status() {
@@ -321,12 +322,13 @@ void MainWindow::display_song_status() {
 
 void MainWindow::set_language(QAction* action) {
     QLocale *locale_new = new QLocale(action->data().toString());
-    if(locale != locale_new) {
+    if (locale != locale_new) {
         locale = locale_new;
         save_settings();
         qApp->removeTranslator(translator);
-        if(translator->load(QString(":/language/%1.qm").arg(locale->name())))
+        if (translator->load(QString(":/language/%1.qm").arg(locale->name()))) {
             qApp->installTranslator(translator);
+        }
         retranslate_ui();
     }
 }
@@ -334,9 +336,9 @@ void MainWindow::set_language(QAction* action) {
 bool MainWindow::setup_settings_file() {
     QFile file(settings_file_path);
     if (!file.exists()) {  // if settings file does not exist, create and initialise it
-        if(!file.open(QFile::WriteOnly | QFile::Text))
+        if (!file.open(QFile::WriteOnly | QFile::Text)) {
             return false;
-        else {
+        } else {
             QTextStream out(&file);
             out << "[General]\n" << "locale=en_GB";
             out.flush();
@@ -347,14 +349,15 @@ bool MainWindow::setup_settings_file() {
 }
 
 void MainWindow::load_settings() {
-    QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
-    QLocale *l = locale;
-    delete l;
+    QSettings *settings = new QSettings(settings_file_path,
+                                        QSettings::IniFormat);
+    delete locale;
     locale = new QLocale(settings->value("locale", "").toString());
 }
 
 void MainWindow::save_settings() {
-    QSettings *settings = new QSettings(settings_file_path, QSettings::IniFormat);
+    QSettings *settings = new QSettings(settings_file_path,
+                                        QSettings::IniFormat);
     settings->setValue("locale", locale->name());
     settings->sync();
 }
@@ -399,12 +402,11 @@ void MainWindow::retranslate_ui() {
     translrc_save_button->setText(tr("Save translated lyrics"));
     translrc_submit_button->setText(tr("Submit translation to 163"));
 
-    hide_tags_button->setTexts(tr("Hide LRC tags"),tr("Show LRC tags"));
-    order_tags_button->setTexts(tr("Order tags"),tr("Unorder tags"));
+    hide_tags_button->setTexts(tr("Hide LRC tags"), tr("Show LRC tags"));
+    order_tags_button->setTexts(tr("Order tags"), tr("Unorder tags"));
 
     status_label->setText(tr("Status:"));
-    if(!status_edit->text().isEmpty())
-        display_song_status();
+    if (!status_edit->text().isEmpty()) display_song_status();
 
     // menu bar
     file_menu->setTitle(tr("File"));
@@ -419,5 +421,6 @@ void MainWindow::retranslate_ui() {
     about_action->setText(tr("About"));
 
     // cover window
-    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1").arg(song->album));
+    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1")
+                                                        .arg(song->album));
 }
