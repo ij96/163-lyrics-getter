@@ -1,13 +1,12 @@
 #include "jsonhighlighter.h"
 
-JsonHighlighter::JsonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {}
+JsonHighlighter::JsonHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent) {
+    map.insert(tree.id++, &tree);
+    // Error type, id = 0
+    map.insert(tree.id++, 0);
+}
 
 void JsonHighlighter::highlightBlock(const QString &text) {
-    QRegularExpression expression;
-    QRegularExpressionMatchIterator i;
-
-    expression.setPatternOptions(QRegularExpression::MultilineOption);
-
     // key
     QTextCharFormat key_format;
     key_format.setFontItalic(false);
@@ -38,22 +37,133 @@ void JsonHighlighter::highlightBlock(const QString &text) {
     other_format.setFontFixedPitch(true);
     other_format.setForeground(Qt::black);
     other_format.setFontWeight(QFont::Light);
+    // value: array
+    QTextCharFormat array_format;
+    array_format.setBackground(Qt::lightGray);
+    // value: object
+    QTextCharFormat obj_format;
+    obj_format.setBackground(Qt::cyan);
+    // syntax error
+    QTextCharFormat error_format;
+    error_format.setFontItalic(false);
+    error_format.setFontFixedPitch(true);
+    error_format.setBackground(Qt::magenta);
+    error_format.setFontWeight(QFont::Light);
 
-    expression.setPattern("(\"[^\"]*\")\\s*:\\s*((.*[^,])(?(?=,)(?=,$)|(?=$))|([{[]))");
-
-    i = expression.globalMatch(text);
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(1), match.capturedLength(1), key_format);
-        QString value = match.captured(2);
-        if (QRegularExpression("^(true|false|null)$").match(value).hasMatch()) {
-            setFormat(match.capturedStart(2), match.capturedLength(2), boolean_format);
-        } else if (QRegularExpression("^[0-9]+(.[0-9]+)?$"
-                                      "|^[1-9](.[0-9]+)?([eE][+-]?[0-9]+)?$")
-                                      .match(value).hasMatch()) {
-            setFormat(match.capturedStart(2), match.capturedLength(2), numerical_format);
-        } else if (QRegularExpression("^\".*\"$").match(value).hasMatch()) {
-            setFormat(match.capturedStart(2), match.capturedLength(2), text_format);
-        }
+    if (previousBlockState() == 0) {
+        // Structural error
+        setCurrentBlockState(0);
+        setFormat(0, text.length(), error_format);
+        return;
     }
+
+    static const QRegularExpression key_exp("^\\s*(?:,|(\\})|(\"(?:\\\\\"|[^\"])*\")|([^\\s]))\\s*");
+    static const QRegularExpression value_exp("^\\s*(?:[,:]|(\\[)|(\\])|(\\{)|(-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)|(\"(?:\\\\\"|[^\"])*\")|(true|false)|(null)|([^\\s]))\\s*");
+
+    node_t *np = map[previousBlockState()];
+    const QRegularExpression *exp = &value_exp;
+    if (np->type == node_t::Object)
+        exp = &key_exp;
+
+    QRegularExpressionMatch match;
+    QString s = text;
+    int i = 0;
+    while ((match = exp->match(s)).hasMatch()) {
+        int m = 0;
+        if (exp == &key_exp) {
+            if (match.capturedLength(++m)) {
+                // End of object
+                np = np->parent;
+                if (np->type == node_t::Value)
+                    np = np->parent;
+                if (!np) {
+                    // Error: top-level
+                    i += match.capturedEnd(m);
+                    break;
+                }
+            } else if (match.capturedLength(++m)) {
+                // Key
+                setFormat(i + match.capturedStart(m), match.capturedLength(m), key_format);
+                if (!np->value)
+                    np->value = newNode(np, node_t::Value);
+                np = np->value;
+            } else if (match.capturedLength(++m)) {
+                // Error: unexpected
+                i += match.capturedStart(m);
+                np = 0;
+                break;
+            }
+        } else {
+            if (match.capturedLength(++m)) {
+                // Array
+                if (!np->array)
+                    np->array = newNode(np, node_t::Array);
+                np = np->array;
+            } else if (match.capturedLength(++m)) {
+                // End of array
+                if (np->type != node_t::Array) {
+                    // Error: unexpected
+                    i += match.capturedStart(m);
+                    np = 0;
+                    break;
+                }
+                np = np->parent;
+                if (np->type == node_t::Value)
+                    np = np->parent;
+                if (!np) {
+                    // Error: top-level
+                    i += match.capturedEnd(m);
+                    break;
+                }
+            } else if (match.capturedLength(++m)) {
+                // Object
+                if (!np->value)
+                    np->value = newNode(np, node_t::Object);
+                np = np->value;
+            } else {
+                if (match.capturedLength(++m))
+                    // Number
+                    setFormat(i + match.capturedStart(m), match.capturedLength(m), numerical_format);
+                else if (match.capturedLength(++m))
+                    // String
+                    setFormat(i + match.capturedStart(m), match.capturedLength(m), text_format);
+                else if (match.capturedLength(++m))
+                    // Boolean
+                    setFormat(i + match.capturedStart(m), match.capturedLength(m), boolean_format);
+                else if (match.capturedLength(++m))
+                    // Null
+                    setFormat(i + match.capturedStart(m), match.capturedLength(m), other_format);
+                else if (match.capturedLength(++m)) {
+                    // Error: unexpected
+                    i += match.capturedStart(m);
+                    np = 0;
+                    break;
+                }
+                // Value captured
+                if (match.lastCapturedIndex() != 0 && np->type == node_t::Value)
+                    np = np->parent;
+            }
+        }
+        i += match.capturedLength();
+        s.remove(0, match.capturedLength());
+        // Object expects new key, Array/Value expects new value
+        exp = np->type == node_t::Object ? &key_exp : &value_exp;
+    }
+
+    if (!np) {
+        // Structural error
+        setCurrentBlockState(0);
+        setFormat(i, text.length() - i, error_format);
+    } else
+        setCurrentBlockState(np->id);
+}
+
+JsonHighlighter::node_t *JsonHighlighter::newNode(node_t *parent, node_t::Types type)
+{
+    node_t *p = new node_t;
+    p->parent = parent;
+    p->type = type;
+    p->id = tree.id;
+    map.insert(tree.id++, p);
+    return p;
 }
