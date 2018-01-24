@@ -13,7 +13,8 @@ SOURCES += \
     image.cpp \
     togglebutton.cpp \
     lyrics.cpp \
-    lyricshighlighter.cpp
+    lyricshighlighter.cpp \
+    jsonhighlighter.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -21,7 +22,8 @@ HEADERS += \
     image.h \
     togglebutton.h \
     lyrics.h \
-    lyricshighlighter.h
+    lyricshighlighter.h \
+    jsonhighlighter.h
 
 TRANSLATIONS += \
     language\zh_CN.ts

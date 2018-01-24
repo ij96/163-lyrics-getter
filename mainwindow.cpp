@@ -47,12 +47,14 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     file_menu = new QMenu();
     options_menu = new QMenu();
     language_menu = new QMenu();
+    tools_menu = new QMenu();
     about_menu = new QMenu();
 
     save_lrc_action = new QAction();
     save_translrc_action = new QAction();
     save_info_cover_action = new QAction();
     quit_action = new QAction();
+    view_song_json_action = new QAction();
     about_action = new QAction();
     //------END initialisation------
 
@@ -90,6 +92,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     options_menu->addMenu(language_menu);
 
+    // tools menu
+    tools_menu->addAction(view_song_json_action);
+
     // about menu
     about_menu->addAction(about_action);
 
@@ -97,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     QMenuBar *menu_bar = new QMenuBar();
     menu_bar->addMenu(file_menu);
     menu_bar->addMenu(options_menu);
+    menu_bar->addMenu(tools_menu);
     menu_bar->addMenu(about_menu);
     //---END menu bar---
 
@@ -178,6 +184,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(save_translrc_action, SIGNAL(triggered()), this, SLOT(save_translrc()));
     connect(save_info_cover_action, SIGNAL(triggered()), this, SLOT(save_info_cover()));
     connect(quit_action, SIGNAL(triggered()), this, SLOT(quit()));
+    connect(view_song_json_action, SIGNAL(triggered()), this, SLOT(view_song_json()));
     connect(about_action, SIGNAL(triggered()), this, SLOT(about()));
 
     connect(language_menu, SIGNAL(triggered(QAction*)), this, SLOT(set_language(QAction*)));
@@ -382,6 +389,44 @@ void MainWindow::order_or_unorder_tags() {
     display_lrc_translrc();
 }
 
+void MainWindow::view_song_json() {
+    QLabel *window = new QLabel;
+    window->setWindowModality(Qt::NonModal);
+    window->setWindowFlags(Qt::Window);
+    window->setWindowTitle(tr("Raw JSON, ID = %1").arg(song->id()));
+
+    QGridLayout *window_layout = new QGridLayout;
+
+    QTextEdit *info_json_text = new QTextEdit;
+    info_json_text->setFontFamily("Courier");
+
+    QTextEdit *lyrics_json_text = new QTextEdit;
+    lyrics_json_text->setFontFamily("Courier");
+
+    QJsonDocument doc;
+    QString formatted_json_string;
+    JsonHighlighter *info_json_hl;
+    JsonHighlighter *lyrics_json_hl;
+
+    doc.setObject(song->info_json_obj);
+    formatted_json_string = doc.toJson(QJsonDocument::Indented);
+    info_json_text->setText(formatted_json_string);
+    info_json_hl = new JsonHighlighter(info_json_text->document());
+
+    doc.setObject(song->lyrics_json_obj);
+    formatted_json_string = doc.toJson(QJsonDocument::Indented);
+    lyrics_json_text->setText(formatted_json_string);
+    lyrics_json_hl = new JsonHighlighter(lyrics_json_text->document());
+
+    window_layout->addWidget(info_json_text,   0, 0);
+    window_layout->addWidget(lyrics_json_text, 0, 1);
+
+    window->setLayout(window_layout);
+    window->resize(800, 640);
+
+    window->show();
+}
+
 void MainWindow::retranslate_ui() {
     // app name
     app_name = tr("163 Lyrics Getter %1").arg(app_version);
@@ -415,12 +460,14 @@ void MainWindow::retranslate_ui() {
     file_menu->setTitle(tr("File"));
     options_menu->setTitle(tr("Options"));
     language_menu->setTitle(tr("Language"));
+    tools_menu->setTitle(tr("Tools"));
     about_menu->setTitle(tr("About"));
 
     save_lrc_action->setText(tr("Save original lyrics"));
     save_translrc_action->setText(tr("Save translated lyrics"));
     save_info_cover_action->setText(tr("Save cover image"));
     quit_action->setText(tr("Quit"));
+    view_song_json_action->setText(tr("View raw JSON"));
     about_action->setText(tr("About"));
 
     // cover window

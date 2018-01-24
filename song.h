@@ -30,6 +30,9 @@ public:
     QString translrc_uploader;  // translated lyrics uploader name
     QUrl cover_url;
     QImage cover;
+    
+    QJsonObject info_json_obj;
+    QJsonObject lyrics_json_obj;
 
     void get_all();
 
@@ -59,8 +62,6 @@ private:
     QNetworkAccessManager nam;
     QList<QString> requests; // list of running requests
 
-    QJsonObject song_info_json_obj;
-    QJsonObject song_lyrics_json_obj;
     QString song_lrc_upload_html;
     QString song_translrc_upload_html;
 

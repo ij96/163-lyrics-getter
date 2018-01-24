@@ -9,6 +9,7 @@
 #include "song.h"
 #include "togglebutton.h"
 #include "lyricshighlighter.h"
+#include "jsonhighlighter.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -39,6 +40,8 @@ private slots:
 
     void show_or_hide_tags();
     void order_or_unorder_tags();
+    
+    void view_song_json();
 
 private:
     bool show_tags = true;   // whether the displayed lyrics should have LRC tags
@@ -96,12 +99,14 @@ private:
     QMenu *file_menu;
     QMenu *options_menu;
     QMenu *language_menu;
+    QMenu *tools_menu;
     QMenu *about_menu;
 
     QAction *save_lrc_action;
     QAction *save_translrc_action;
     QAction *save_info_cover_action;
     QAction *quit_action;
+    QAction *view_song_json_action;
     QAction *about_action;
     //--END menu---
 
@@ -118,7 +123,6 @@ private:
 
     // song object
     Song *song;
-
 };
 
 #endif // MAINWINDOW_H

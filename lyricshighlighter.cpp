@@ -55,7 +55,8 @@ void LyricsHighlighter::highlightBlock(const QString &text) {
 
     expression.setPattern("(?:\\][^[]+)"
                           "(?=((?:\\[[^\\[]+\\])+))"
-                          "|(\\[[^:]*\\]|\\[[0-9]+:[^\\]:]*[^0-9.:\\]]+[^\\]:]*\\])");
+                          "|(\\[[^:]*\\]"
+                          "|\\[[0-9]+:[^\\]:]*[^0-9.:\\]]+[^\\]:]*\\])");
     i = expression.globalMatch(text);
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();

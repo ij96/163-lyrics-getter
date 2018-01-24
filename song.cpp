@@ -11,10 +11,10 @@ void Song::finished(QNetworkReply *reply) {
         QString type = reply->property("type").toString();
         if (type == "info") {
             QString response_data = reply->readAll();
-            song_info_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
+            info_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
         } else if (type == "lyrics") {
             QString response_data = reply->readAll();
-            song_lyrics_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
+            lyrics_json_obj = QJsonDocument::fromJson(response_data.toUtf8()).object();
         } else if (type == "cover") {
             QByteArray response_data = reply->readAll();
             if (cover_url.isEmpty()) {
@@ -36,7 +36,7 @@ void Song::finished(QNetworkReply *reply) {
             emit done();
         }
     } else {
-        qDebug() << "Failure to download " << reply->property("type");
+        qDebug() << "Failure to download" << reply->property("type");
         qDebug() << "Request error:" << reply->errorString();
     }
     delete reply;
@@ -49,7 +49,7 @@ void Song::get(const QString &type, const QUrl &url) {
 }
 
 void Song::parse_info() {
-    QJsonObject json_songs_0_obj = song_info_json_obj.value("songs").toArray()[0].toObject();
+    QJsonObject json_songs_0_obj = info_json_obj.value("songs").toArray()[0].toObject();
 
     QJsonValue title_json = json_songs_0_obj.value("name");
     QJsonValue artist_json = json_songs_0_obj.value("artists").toArray()[0].toObject()
@@ -71,13 +71,13 @@ void Song::parse_info() {
 }
 
 void Song::parse_lyrics() {
-    QJsonValue lrc_json = song_lyrics_json_obj.value("lrc").toObject()
+    QJsonValue lrc_json = lyrics_json_obj.value("lrc").toObject()
                                               .value("lyric");
-    QJsonValue translrc_json = song_lyrics_json_obj.value("tlyric").toObject()
+    QJsonValue translrc_json = lyrics_json_obj.value("tlyric").toObject()
                                                    .value("lyric");
-    QJsonValue lrc_user_json = song_lyrics_json_obj.value("lyricUser").toObject()
+    QJsonValue lrc_user_json = lyrics_json_obj.value("lyricUser").toObject()
                                                    .value("nickname");
-    QJsonValue translrc_user_json = song_lyrics_json_obj.value("transUser").toObject()
+    QJsonValue translrc_user_json = lyrics_json_obj.value("transUser").toObject()
                                                         .value("nickname");
 
     lrc.set(lrc_json.toString());
@@ -93,15 +93,15 @@ void Song::parse_lyrics() {
 void Song::check_status() {
     _status = SONG_STATUS_DEFAULT; // clear
     // check if song exists, by counting items in "songs" array: if 0, then song does not exist
-    if (song_info_json_obj.value("songs").toArray().size() != 0) {
+    if (info_json_obj.value("songs").toArray().size() != 0) {
         _status |= SONG_STATUS_EXIST;
-        if (song_lyrics_json_obj.value("nolyric").toBool() == true) {
+        if (lyrics_json_obj.value("nolyric").toBool() == true) {
             _status |= SONG_STATUS_INSTRUMENTAL;
         }
-        if (song_lyrics_json_obj.value("lrc").toObject().value("lyric").toString() != "") {
+        if (lyrics_json_obj.value("lrc").toObject().value("lyric").toString() != "") {
             _status |= SONG_STATUS_LRC;
         }
-        if (song_lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() != "") {
+        if (lyrics_json_obj.value("tlyric").toObject().value("lyric").toString() != "") {
             _status |= SONG_STATUS_TRANSLRC;
         }
         if (song_lrc_upload_html.indexOf("n-lytips") != -1) {
