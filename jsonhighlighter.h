@@ -12,10 +12,10 @@ protected:
 
 private:
     struct node_t {
-        ~node_t() {delete array; delete value;}
+        ~node_t() {delete next; delete array; delete comma;}
 
-        struct node_t *array = 0, *value = 0, *parent = 0;
-        enum Types {Array, Object, Value} type = Value;
+        struct node_t *next = 0, *array = 0, *comma = 0, *parent = 0;
+        enum Types {Key, Value, Array, Object, Colon, Comma} type = Value;
         int id = -1;
     } tree, error;
     QMap<int, node_t *> map;
