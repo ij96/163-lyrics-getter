@@ -9,7 +9,7 @@
 #include "song.h"
 #include "togglebutton.h"
 #include "lyricshighlighter.h"
-#include "jsonhighlighter.h"
+#include "jsonviewer.h"
 
 class MainWindow : public QWidget{
     Q_OBJECT
@@ -93,6 +93,8 @@ private:
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;
     QLineEdit *status_edit;
+
+    JsonViewer *json_viewer;
     //---END widgets---
 
     // menu

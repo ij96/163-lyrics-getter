@@ -201,8 +201,7 @@ error:
         setCurrentBlockState(p->id);
 }
 
-JsonHighlighter::node_t *JsonHighlighter::newNode(node_t *parent, node_t::Types type)
-{
+JsonHighlighter::node_t *JsonHighlighter::newNode(node_t *parent, node_t::Types type) {
     node_t *p = new node_t;
     p->parent = parent;
     p->type = type;

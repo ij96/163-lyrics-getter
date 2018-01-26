@@ -40,9 +40,9 @@ public:
     bool submit_translrc();
 
     void set_id(QString buf);
-    qint32 id();
+    qint32 id() const;
 
-    qint8 status();
+    qint8 status() const;
 
     void clear();
 

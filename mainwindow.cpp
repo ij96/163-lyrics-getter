@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     quit_action = new QAction();
     view_song_json_action = new QAction();
     about_action = new QAction();
+
+    json_viewer = new JsonViewer();
     //------END initialisation------
 
     //---settings file---
@@ -215,6 +217,8 @@ void MainWindow::get_info_lyrics() {
     display_lrc_translrc();
 
     display_song_status();
+
+    json_viewer->update(song->id(), song->info_json_obj, song->lyrics_json_obj);
 }
 
 void MainWindow::quit() {
@@ -390,41 +394,7 @@ void MainWindow::order_or_unorder_tags() {
 }
 
 void MainWindow::view_song_json() {
-    QLabel *window = new QLabel;
-    window->setWindowModality(Qt::NonModal);
-    window->setWindowFlags(Qt::Window);
-    window->setWindowTitle(tr("JSON viewer, ID = %1").arg(song->id()));
-
-    QGridLayout *window_layout = new QGridLayout;
-
-    QTextEdit *info_json_text = new QTextEdit;
-    info_json_text->setFontFamily("Courier");
-
-    QTextEdit *lyrics_json_text = new QTextEdit;
-    lyrics_json_text->setFontFamily("Courier");
-
-    QJsonDocument doc;
-    QString formatted_json_string;
-    JsonHighlighter *info_json_hl;
-    JsonHighlighter *lyrics_json_hl;
-
-    doc.setObject(song->info_json_obj);
-    formatted_json_string = doc.toJson(QJsonDocument::Indented);
-    info_json_text->setText(formatted_json_string);
-    info_json_hl = new JsonHighlighter(info_json_text->document());
-
-    doc.setObject(song->lyrics_json_obj);
-    formatted_json_string = doc.toJson(QJsonDocument::Indented);
-    lyrics_json_text->setText(formatted_json_string);
-    lyrics_json_hl = new JsonHighlighter(lyrics_json_text->document());
-
-    window_layout->addWidget(info_json_text,   0, 0);
-    window_layout->addWidget(lyrics_json_text, 0, 1);
-
-    window->setLayout(window_layout);
-    window->resize(800, 640);
-
-    window->show();
+    json_viewer->show();
 }
 
 void MainWindow::retranslate_ui() {
