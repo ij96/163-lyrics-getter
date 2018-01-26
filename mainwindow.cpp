@@ -393,7 +393,7 @@ void MainWindow::view_song_json() {
     QLabel *window = new QLabel;
     window->setWindowModality(Qt::NonModal);
     window->setWindowFlags(Qt::Window);
-    window->setWindowTitle(tr("Raw JSON, ID = %1").arg(song->id()));
+    window->setWindowTitle(tr("JSON viewer, ID = %1").arg(song->id()));
 
     QGridLayout *window_layout = new QGridLayout;
 
@@ -467,7 +467,7 @@ void MainWindow::retranslate_ui() {
     save_translrc_action->setText(tr("Save translated lyrics"));
     save_info_cover_action->setText(tr("Save cover image"));
     quit_action->setText(tr("Quit"));
-    view_song_json_action->setText(tr("View raw JSON"));
+    view_song_json_action->setText(tr("JSON viewer"));
     about_action->setText(tr("About"));
 
     // cover window
