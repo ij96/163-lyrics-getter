@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     locale = new QLocale;
 
     song = new Song();
+
     // widgets
     input_id_label = new QLabel();
     input_id_edit = new QLineEdit();
@@ -57,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     view_song_json_action = new QAction();
     about_action = new QAction();
 
+    // JSON viewer
     json_viewer = new JsonViewer();
     //------END initialisation------
 
@@ -71,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     }
 
     //---version---
-    app_version = "v1.0.3";
+    app_version = "v1.0.4";
 
     //------UI------
     //---menu bar---
@@ -211,14 +213,15 @@ void MainWindow::get_info_lyrics() {
     info_lrc_uploader_edit->setText(song->lrc_uploader);
     info_translrc_uploader_edit->setText(song->translrc_uploader);
     info_cover_image->setPixmap(QPixmap::fromImage(song->cover));
-    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1")
-                                                        .arg(song->album));
+    info_cover_image->set_window_title(tr("Album cover art: %1").arg(song->album));
+
+    json_viewer->update(song->info_json_obj, song->lyrics_json_obj);
+    json_viewer->set_window_title(tr("JSON viewer, ID = %1").arg(song->id()));
 
     display_lrc_translrc();
 
     display_song_status();
 
-    json_viewer->update(song->id(), song->info_json_obj, song->lyrics_json_obj);
 }
 
 void MainWindow::quit() {
@@ -440,7 +443,9 @@ void MainWindow::retranslate_ui() {
     view_song_json_action->setText(tr("JSON viewer"));
     about_action->setText(tr("About"));
 
+    // JSON viewer
+    json_viewer->set_window_title(tr("JSON viewer, ID = %1").arg(song->id()));
+
     // cover window
-    info_cover_image->image()->window()->setWindowTitle(tr("Album cover art: %1")
-                                                        .arg(song->album));
+    info_cover_image->set_window_title(tr("Album cover art: %1").arg(song->album));
 }

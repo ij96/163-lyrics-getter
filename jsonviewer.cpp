@@ -17,12 +17,11 @@ JsonViewer::JsonViewer(QWidget *parent) : QWidget(parent) {
 
     window->setWindowModality(Qt::NonModal);
     window->setWindowFlags(Qt::Window);
-    window->setWindowTitle(tr("JSON viewer"));
     window->setLayout(window_layout);
     window->resize(800, 640);
 }
 
-void JsonViewer::update(qint32 song_id, QJsonObject info, QJsonObject lyrics) {
+void JsonViewer::update(QJsonObject info, QJsonObject lyrics) {
     QJsonDocument doc;
     QString formatted_json_string;
 
@@ -33,10 +32,12 @@ void JsonViewer::update(qint32 song_id, QJsonObject info, QJsonObject lyrics) {
     doc.setObject(lyrics);
     formatted_json_string = doc.toJson(QJsonDocument::Indented);
     lyrics_json_text->setText(formatted_json_string);
-
-    window->setWindowTitle(tr("JSON viewer, ID = %1").arg(song_id));
 }
 
-void JsonViewer::show() {
+void JsonViewer::show() const {
     window->show();
+}
+
+void JsonViewer::set_window_title(QString title) {
+    window->setWindowTitle(title);
 }

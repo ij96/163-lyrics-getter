@@ -11,8 +11,7 @@ public:
     explicit Image(QWidget *parent = 0);
 
     void update_image();
-
-    QWidget *window() const;
+    void set_window_title(QString title);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *ev);
@@ -22,14 +21,15 @@ private:
     QLabel *window_label;
 };
 
+
 class ImageCanvas : public QWidget{
     Q_OBJECT
 
 public:
     explicit ImageCanvas(QWidget *parent = 0);
 
-    Image *image() const;
     void setPixmap(const QPixmap &pixmap);
+    void set_window_title(QString title);
 
 protected:
     virtual void resizeEvent(QResizeEvent *event);

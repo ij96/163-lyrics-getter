@@ -178,11 +178,11 @@ void Song::set_id(QString buf) {
     }
 }
 
-qint32 Song::id() {
+qint32 Song::id() const {
     return _id;
 }
 
-qint8 Song::status() {
+qint8 Song::status() const {
     return _status;
 }
 

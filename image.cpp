@@ -9,8 +9,8 @@ Image::Image(QWidget *parent) : QLabel(parent) {
     viewer->setWidget(window_label);
 }
 
-QWidget *Image::window() const {
-    return viewer;
+void Image::set_window_title(QString title) {
+    viewer->setWindowTitle(title);
 }
 
 void Image::mousePressEvent(QMouseEvent *event) {
@@ -49,16 +49,16 @@ ImageCanvas::ImageCanvas(QWidget *parent) : QWidget(parent) {
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 }
 
-Image *ImageCanvas::image() const {
-    return image_label;
-}
-
 void ImageCanvas::setPixmap(const QPixmap &pixmap) {
     image_label->setPixmap(pixmap);
     image_label->update_image();
 
     QResizeEvent event(size(), size());
     resizeEvent(&event);
+}
+
+void ImageCanvas::set_window_title(QString title) {
+    image_label->setWindowTitle(title);
 }
 
 void ImageCanvas::resizeEvent(QResizeEvent *event) {

@@ -9,8 +9,9 @@ class JsonViewer : public QWidget {
 
 public:
     explicit JsonViewer(QWidget *parent = 0);
-    void update(qint32 song_id, QJsonObject info, QJsonObject lyrics);
-    void show();
+    void update(QJsonObject info, QJsonObject lyrics);
+    void set_window_title(QString title);
+    void show() const;
 
 private:
     QLabel *window;
