@@ -61,27 +61,29 @@ private:
     QPushButton *input_button;
 
     // song info
-    QLabel *info_title_label;
+    QLabel    *info_title_label;
     QLineEdit *info_title_edit;
-    QLabel *info_artist_label;
+    QLabel    *info_artist_label;
     QLineEdit *info_artist_edit;
-    QLabel *info_album_label;
+    QLabel    *info_album_label;
     QLineEdit *info_album_edit;
-    QLabel *info_lrc_uploader_label;
+    QLabel    *info_lrc_uploader_label;
     QLineEdit *info_lrc_uploader_edit;
-    QLabel *info_translrc_uploader_label;
+    QLabel    *info_translrc_uploader_label;
     QLineEdit *info_translrc_uploader_edit;
     ImageCanvas *info_cover_image;
     QPushButton *info_cover_save_button;
 
     // lyrics (lrc) & translated lyrics (translrc)
-    QLabel *lrc_label;
+    QLabel    *lrc_label;
+    QLabel    *lrc_uptime_label;
     QTextEdit *lrc_text;
     LyricsHighlighter *lrc_text_hl;
     QPushButton *lrc_save_button;
     QPushButton *lrc_submit_button;
 
-    QLabel *translrc_label;
+    QLabel    *translrc_label;
+    QLabel    *translrc_uptime_label;
     QTextEdit *translrc_text;
     LyricsHighlighter *translrc_text_hl;
     QPushButton *translrc_save_button;

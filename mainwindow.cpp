@@ -26,12 +26,14 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     info_cover_save_button = new QPushButton();
 
     lrc_label = new QLabel();
+    lrc_uptime_label = new QLabel();
     lrc_text = new QTextEdit();
     lrc_text_hl = new LyricsHighlighter(lrc_text->document());
     lrc_save_button = new QPushButton();
     lrc_submit_button = new QPushButton();
 
     translrc_label = new QLabel();
+    translrc_uptime_label = new QLabel();
     translrc_text = new QTextEdit();
     translrc_text_hl = new LyricsHighlighter(translrc_text->document());
     translrc_save_button = new QPushButton();
@@ -142,17 +144,19 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     toolbar_layout->addWidget(info_cover_save_button,   9, 0, 1, 3);
 
-    QVBoxLayout *lrc_layout = new QVBoxLayout();
-    lrc_layout->addWidget(lrc_label);
-    lrc_layout->addWidget(lrc_text);
-    lrc_layout->addWidget(lrc_save_button);
-    lrc_layout->addWidget(lrc_submit_button);
+    QGridLayout *lrc_layout = new QGridLayout();
+    lrc_layout->addWidget(lrc_label,                    0, 0, 1, 1);
+    lrc_layout->addWidget(lrc_uptime_label,             0, 1, 1, 1);
+    lrc_layout->addWidget(lrc_text,                     1, 0, 1, 2);
+    lrc_layout->addWidget(lrc_save_button,              2, 0, 1, 2);
+    lrc_layout->addWidget(lrc_submit_button,            3, 0, 1, 2);
 
-    QVBoxLayout *translrc_layout = new QVBoxLayout();
-    translrc_layout->addWidget(translrc_label);
-    translrc_layout->addWidget(translrc_text);
-    translrc_layout->addWidget(translrc_save_button);
-    translrc_layout->addWidget(translrc_submit_button);
+    QGridLayout *translrc_layout = new QGridLayout();
+    translrc_layout->addWidget(translrc_label,               0, 0, 1, 1);
+    translrc_layout->addWidget(translrc_uptime_label,        0, 1, 1, 1);
+    translrc_layout->addWidget(translrc_text,                1, 0, 1, 2);
+    translrc_layout->addWidget(translrc_save_button,         2, 0, 1, 2);
+    translrc_layout->addWidget(translrc_submit_button,       3, 0, 1, 2);
 
     // 0th
     QGridLayout *main_layout = new QGridLayout(this);
