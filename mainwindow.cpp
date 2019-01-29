@@ -456,3 +456,8 @@ void MainWindow::retranslate_ui() {
     // cover window
     info_cover_image->set_window_title(tr("Album cover art: %1").arg(song->album));
 }
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    qApp->quit();
+    event->accept();
+}

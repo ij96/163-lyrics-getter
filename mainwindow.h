@@ -54,6 +54,8 @@ private:
     QString remove_tags(QString lrc);
     void retranslate_ui();
 
+    void closeEvent(QCloseEvent *event);
+
     //---widgets---
     // ID input field
     QLabel *input_id_label;
