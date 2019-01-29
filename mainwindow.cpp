@@ -219,6 +219,9 @@ void MainWindow::get_info_lyrics() {
     info_cover_image->setPixmap(QPixmap::fromImage(song->cover));
     info_cover_image->set_window_title(tr("Album cover art: %1").arg(song->album));
 
+    lrc_uptime_label->setText(song->lrc_uptime.toString("yyyy-MM-dd hh:mm:ss"));
+    translrc_uptime_label->setText(song->translrc_uptime.toString("yyyy-MM-dd hh:mm:ss"));
+
     json_viewer->update(song->info_json_obj, song->lyrics_json_obj);
     json_viewer->set_window_title(tr("JSON viewer, ID = %1").arg(song->id()));
 

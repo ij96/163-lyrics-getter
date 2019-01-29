@@ -79,12 +79,18 @@ void Song::parse_lyrics() {
                                                    .value("nickname");
     QJsonValue translrc_user_json = lyrics_json_obj.value("transUser").toObject()
                                                         .value("nickname");
+    QJsonValue lrc_uptime_json = lyrics_json_obj.value("lyricUser").toObject()
+                                                     .value("uptime");
+    QJsonValue translrc_uptime_json = lyrics_json_obj.value("transUser").toObject()
+                                                          .value("uptime");
 
     lrc.set(lrc_json.toString());
     translrc.set(translrc_json.toString());
     translrc_insert_blanks();
     lrc_uploader = lrc_user_json.toString();
     translrc_uploader = translrc_user_json.toString();
+    lrc_uptime.setMSecsSinceEpoch(lrc_uptime_json.toDouble()); // 163 uses milliseconds
+    translrc_uptime.setMSecsSinceEpoch(translrc_uptime_json.toDouble());
 
     //qDebug() << "Lyrics: " << lrc_json;
     //qDebug() << "Translated lyrics: " << translrc_json;

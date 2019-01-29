@@ -28,6 +28,8 @@ public:
     Lyrics translrc;            // translated lyrics
     QString lrc_uploader;       // lyrics uploader name
     QString translrc_uploader;  // translated lyrics uploader name
+    QDateTime lrc_uptime;       // lyrics upload time
+    QDateTime translrc_uptime;  // translated lyrics upload time
     QUrl cover_url;
     QImage cover;
     
