@@ -43,7 +43,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     order_tags_button = new ToggleButton();
 
     status_label = new QLabel();
-    status_edit = new QLineEdit();
+    status_edit = new QTextEdit();
+    int edit_rows = 3; // number of rows
+    QTextDocument *status_doc = status_edit->document();
+    int doc_spacing = QFontMetrics(status_doc->defaultFont()).lineSpacing();
+    int doc_margin = status_doc->documentMargin();
+    int edit_framewidth = status_edit->frameWidth();
+    QMargins edit_margins = status_edit->contentsMargins();
+    int status_edit_height = doc_spacing * edit_rows
+            + (doc_margin + edit_framewidth) * 2
+            + edit_margins.top() + edit_margins.bottom();
+    status_edit->setFixedHeight(status_edit_height);
     status_edit->setReadOnly(true);
 
     // menu bar
@@ -340,6 +350,13 @@ void MainWindow::display_song_status() {
         if (status & SONG_STATUS_TRANSLRC_UPLOADED) {
             msg += tr(" Translation has been uploaded.");
         }
+        if ((status & SONG_STATUS_CAN_UPLOAD_LRC) && (status & SONG_STATUS_CAN_UPLOAD_TRANSLRC)) {
+            msg += tr(" Can upload lyrics and translation.");
+        } else if (status & SONG_STATUS_CAN_UPLOAD_LRC) {
+            msg += tr(" Can upload lyrics.");
+        } else if (status & SONG_STATUS_CAN_UPLOAD_TRANSLRC) {
+            msg += tr(" Can upload translations.");
+        }
     }
     status_edit->setText(msg);
 }
@@ -434,7 +451,7 @@ void MainWindow::retranslate_ui() {
     order_tags_button->setTexts(tr("Order tags"), tr("Unorder tags"));
 
     status_label->setText(tr("Status:"));
-    if (!status_edit->text().isEmpty()) display_song_status();
+    if (!status_edit->toPlainText().isEmpty()) display_song_status();
 
     // menu bar
     file_menu->setTitle(tr("File"));

@@ -116,6 +116,12 @@ void Song::check_status() {
         if (song_translrc_upload_html.indexOf("n-lytips") != -1) {
             _status |= SONG_STATUS_TRANSLRC_UPLOADED;
         }
+        if (lyrics_json_obj.value("sgc").toBool() == true) {
+            _status |= SONG_STATUS_CAN_UPLOAD_LRC;
+        }
+        if (lyrics_json_obj.value("sfy").toBool() == true) {
+            _status |= SONG_STATUS_CAN_UPLOAD_TRANSLRC;
+        }
     }
 }
 

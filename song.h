@@ -13,6 +13,8 @@
 #define SONG_STATUS_INSTRUMENTAL        0x08 // instrumental - no lyrics should exist
 #define SONG_STATUS_LRC_UPLOADED        0x10 // lyrics already uploaded by someone
 #define SONG_STATUS_TRANSLRC_UPLOADED   0x20 // translation already uploaded by someone
+#define SONG_STATUS_CAN_UPLOAD_LRC      0x40 // can upload lyrics
+#define SONG_STATUS_CAN_UPLOAD_TRANSLRC 0x80 // can upload translation
 
 class Song : public QObject {
     Q_OBJECT
@@ -59,7 +61,7 @@ private:
     qint32 _id_prev = -1;
     bool id_changed = false;
 
-    qint8 _status = SONG_STATUS_DEFAULT;
+    quint8 _status = SONG_STATUS_DEFAULT;
 
     QNetworkAccessManager nam;
     QList<QString> requests; // list of running requests

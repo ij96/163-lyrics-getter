@@ -96,7 +96,7 @@ private:
 
     // song status (displays if song/lrc/translrc exists)
     QLabel *status_label;
-    QLineEdit *status_edit;
+    QTextEdit *status_edit;
 
     JsonViewer *json_viewer;
     //---END widgets---
